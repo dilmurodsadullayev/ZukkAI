@@ -114,3 +114,18 @@ class Analytics(models.Model):
     class Meta:
         verbose_name = "Statistika"
         verbose_name_plural = "Statistikalar"
+
+
+class Feedback(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='feedbacks')
+    subject = models.CharField(max_length=200, verbose_name="Mavzu")
+    message = models.TextField(verbose_name="Xabar matni")
+    rating = models.IntegerField(default=5, verbose_name="Baholash (1-5)")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.subject}"
+
+    class Meta:
+        verbose_name = "Fikr-mulohaza"
+        verbose_name_plural = "Fikr-mulohazalar"

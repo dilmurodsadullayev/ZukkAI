@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import UserUpdateForm, ProfileUpdateForm
-from .models import Topic, AITask, Submission, Analytics, Profile
+from .forms import UserUpdateForm, ProfileUpdateForm, FeedbackForm
+from .models import Topic, AITask, Submission, Analytics, Profile, Feedback
 from .utils import ai_generate_task, ai_evaluate_answer
 
 from django.contrib.auth.forms import UserCreationForm
@@ -125,3 +125,19 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
+
+
+@login_required
+def feedback_view(request):
+    if request.method == "POST":
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.user = request.user
+            feedback.save()
+            messages.success(request, "Rahmat! Fikringiz muvaffaqiyatli qabul qilindi.")
+            return redirect('feedback')
+
+    feedbacks = Feedback.objects.all().order_by('-created_at')[:10]
+    form = FeedbackForm()
+    return render(request, 'portal/feedback.html', {'form': form, 'feedbacks': feedbacks})

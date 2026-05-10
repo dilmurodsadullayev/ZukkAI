@@ -11,4 +11,5 @@ urlpatterns = [
     path('task/<int:pk>/', views.task_detail, name='task_detail'),
     path('results/', views.results, name='results'),
     path('profile/', views.profile_view, name='profile'),
+    path('feedback/', views.feedback_view, name='feedback'),
 ]

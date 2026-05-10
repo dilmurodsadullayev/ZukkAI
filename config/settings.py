@@ -12,32 +12,40 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
-from dotenv import load_dotenv  # <--- BU QATORNI QO'SHING
+from dotenv import load_dotenv
+from django.core.exceptions import ImproperlyConfigured
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# .env faylini BASE_DIR ichidan topib yuklash
-load_dotenv(os.path.join(BASE_DIR, '.env')) # <--- BU QATORNI QO'SHING
+def get_env(name, default=None):
+    value = os.getenv(name, default)
+
+    if value is None or value == "":
+        raise ImproperlyConfigured(f"{name} .env faylda topilmadi")
+
+    return value
+
+
+def get_bool_env(name, default=False):
+    value = os.getenv(name)
+
+    if value is None:
+        return default
+
+    return value.strip().lower() in ["true", "1", "yes", "y", "on"]
+
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# DEBUG: API kalit o'qilyaptimi yoki yo'qmi tekshirish
-if not GEMINI_API_KEY:
-    print("XATO: GEMINI_API_KEY .env fayldan topilmadi!")
-else:
-    # Faqat birinchi marta tekshirish uchun (oxirida bu printni o'chirib tashlang)
-    print(f"Muvaffaqiyat: API kalit o'qildi: {GEMINI_API_KEY[:5]}***")
+SECRET_KEY = get_env("SECRET_KEY")
+
+DEBUG = get_bool_env("DEBUG", default=False)
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_66*+yq#bsau05k3q5_)a0zsc=87t6%w&pg9u(a7@3o0+x!fxi'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = []
 

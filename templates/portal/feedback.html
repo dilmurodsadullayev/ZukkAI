@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 md:px-6">
+    
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        
+        <!-- Chap tomonda: Forma -->
+        <div class="lg:col-span-5" data-aos="fade-right">
+            <div class="vibrant-card p-8 md:p-10 border-2 border-indigo-100 sticky top-28">
+                <div class="flex items-center space-x-4 mb-8">
+                    <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                        <i class="fas fa-comment-dots"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900 italic">Fikr bildirish</h2>
+                        <p class="text-slate-400 text-sm font-bold">Platformani rivojlantirishga yordam bering</p>
+                    </div>
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="mb-6 p-4 bg-emerald-100 text-emerald-700 rounded-2xl font-bold border border-emerald-200">
+                        <i class="fas fa-check-circle mr-2"></i> {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" class="space-y-6">
+                    {% csrf_token %}
+                    <div>
+                        <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Mavzu</label>
+                        {{ form.subject }}
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Baholang</label>
+                        {{ form.rating }}
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Xabar matni</label>
+                        {{ form.message }}
+                    </div>
+                    
+                    <button type="submit" class="w-full btn-primary text-white py-5 rounded-[22px] font-black text-lg shadow-xl shadow-indigo-100 flex items-center justify-center space-x-3 hover:scale-[1.02] active:scale-95 transition-all">
+                        <span>Yuborish</span>
+                        <i class="fas fa-paper-plane text-sm"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- O'ng tomonda: Boshqa mulohazalar -->
+        <div class="lg:col-span-7 space-y-8" data-aos="fade-left">
+            <h3 class="text-3xl font-black text-slate-900 italic px-2">Boshqalarning fikri</h3>
+            
+            <div class="grid grid-cols-1 gap-6">
+                {% for feedback in feedbacks %}
+                <div class="vibrant-card p-8 border border-slate-100 hover:border-indigo-200 transition-all shadow-sm relative overflow-hidden group">
+                    <!-- Rating Stars -->
+                    <div class="flex space-x-1 mb-4 text-amber-400">
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= feedback.rating %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    
+                    <h4 class="text-xl font-bold text-slate-800 mb-2">{{ feedback.subject }}</h4>
+                    <p class="text-slate-500 leading-relaxed italic mb-6">"{{ feedback.message }}"</p>
+                    
+                    <div class="flex items-center space-x-4 border-t border-slate-50 pt-4">
+                        <div class="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 font-bold">
+                            {{ feedback.user.username|slice:":1"|upper }}
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-slate-700">{{ feedback.user.username }}</p>
+                            <p class="text-[10px] text-slate-300 font-bold uppercase tracking-wider">{{ feedback.created_at|date:"d.m.Y" }}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Decorative Icon -->
+                    <i class="fas fa-quote-right absolute -bottom-4 -right-4 text-slate-50 text-8xl group-hover:text-indigo-50 transition-colors"></i>
+                </div>
+                {% empty %}
+                <div class="vibrant-card p-12 text-center border-2 border-dashed border-slate-200">
+                    <i class="fas fa-comments text-5xl text-slate-100 mb-4"></i>
+                    <p class="text-slate-400 font-bold">Hozircha fikrlar mavjud emas.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

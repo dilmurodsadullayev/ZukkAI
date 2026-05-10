@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduAI - Zamonaviy Informatika Ta'limi</title>
+    <title>ZukkAI - Zamonaviy Informatika Ta'limi</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,7 +15,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- AOS -->
+    <!-- AOS (Animations) -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <!-- Alpine.js -->
@@ -65,31 +65,31 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
 
-                <!-- Logo: Endi rasm orqali -->
+                <!-- Logo: ZukkAI -->
                 <a href="{% url 'home' %}" class="flex items-center space-x-3 group">
-                    <img src="{% static 'images/logo.png' %}" alt="EduAI Logo" class="h-12 w-auto object-contain transition-transform group-hover:scale-110">
-                    <span class="text-2xl font-extrabold text-slate-900 tracking-tight hidden sm:block">
-                        Edu<span class="text-indigo-600">AI</span>
+                    <img src="{% static 'images/logo.png' %}" alt="ZukkAI Logo" class="h-12 w-auto object-contain transition-transform group-hover:scale-110">
+                    <span class="text-2xl font-extrabold text-slate-900 tracking-tight hidden sm:block italic">
+                        Zukk<span class="text-indigo-600">AI</span>
                     </span>
                 </a>
 
                 <!-- Desktop Navigatsiya -->
                 <nav class="hidden md:flex items-center space-x-10">
                     <a href="{% url 'home' %}" class="text-slate-600 font-semibold hover:text-indigo-600 transition">Asosiy</a>
+                    <a href="{% url 'feedback' %}" class="text-slate-600 font-semibold hover:text-indigo-600 transition">Fikrlar</a>
                     <a href="{% url 'create_task' %}" class="text-slate-600 font-semibold hover:text-indigo-600 transition">AI Topshiriq</a>
                     <a href="{% url 'results' %}" class="text-slate-600 font-semibold hover:text-indigo-600 transition">Natijalar</a>
                 </nav>
 
-                <!-- Auth qismi (Desktop) -->
+                <!-- Auth qismi -->
                 <div class="hidden md:flex items-center space-x-5">
                     {% if user.is_authenticated %}
                         <a href="{% url 'profile' %}" class="flex items-center space-x-4 border-l pl-5 border-slate-200 group">
                             <div class="text-right">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-indigo-600 transition">Mening Profilim</p>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-indigo-600 transition italic">Kabinet</p>
                                 <p class="text-sm font-bold text-slate-700 leading-none mt-1">{{ user.username }}</p>
                             </div>
 
-                            <!-- Foydalanuvchi rasmi yoki bosh harfi -->
                             <div class="w-11 h-11 rounded-2xl overflow-hidden shadow-md ring-2 ring-transparent group-hover:ring-indigo-600 transition-all">
                                 {% if user.profile.image and user.profile.image.url != '/media/profile_pics/default.png' %}
                                     <img src="{{ user.profile.image.url }}" alt="{{ user.username }}" class="w-full h-full object-cover">
@@ -161,10 +161,10 @@
     <footer class="bg-white border-t border-slate-100 py-12 mt-10">
         <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
             <div class="flex items-center space-x-3">
-                <img src="{% static 'images/logo.png' %}" alt="EduAI Logo" class="h-8 w-auto grayscale opacity-50">
-                <span class="text-lg font-bold text-slate-400 tracking-tight">EduAI</span>
+                <img src="{% static 'images/logo.png' %}" alt="ZukkAI Logo" class="h-8 w-auto grayscale opacity-50">
+                <span class="text-lg font-bold text-slate-400 tracking-tight italic">ZukkAI</span>
             </div>
-            <p class="text-slate-400 text-sm font-medium">© 2024 EduAI - Informatika ta'limining yangi bosqichi.</p>
+            <p class="text-slate-400 text-sm font-medium">© 2026 ZukkAI - Informatika ta'limining innovatsion tizimi.</p>
             <div class="flex space-x-6 text-slate-300 text-xl">
                 <a href="#" class="hover:text-indigo-600 transition"><i class="fab fa-telegram"></i></a>
                 <a href="#" class="hover:text-indigo-600 transition"><i class="fab fa-instagram"></i></a>
