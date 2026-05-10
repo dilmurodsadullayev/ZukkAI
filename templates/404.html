@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-6 py-20 min-h-[70vh] flex flex-col items-center justify-center text-center">
+    
+    <!-- Animatsiyali 404 va Robot ikonkasi -->
+    <div class="relative mb-10" data-aos="zoom-in">
+        <h1 class="text-[120px] md:text-[200px] font-black text-indigo-50 leading-none select-none">404</h1>
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="w-32 h-32 md:w-48 md:h-48 bg-white rounded-[40px] shadow-2xl border border-indigo-100 flex items-center justify-center text-indigo-600 animate-bounce">
+                <i class="fas fa-robot text-6xl md:text-8xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Matn qismi -->
+    <div class="relative z-10" data-aos="fade-up" data-aos-delay="200">
+        <h2 class="text-3xl md:text-5xl font-black text-slate-900 mb-6">
+            Kechirasiz, sahifa topilmadi!
+        </h2>
+        <p class="text-slate-500 text-lg md:text-xl max-w-lg mx-auto mb-10 leading-relaxed font-medium">
+            Siz qidirayotgan manzil o'chirilgan yoki vaqtinchalik mavjud emas. 
+            AI yordamchi darslarga qaytishingizni maslahat beradi.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="{% url 'home' %}" class="btn-primary text-white px-10 py-5 rounded-2xl font-bold text-lg hover:scale-105 transition-all shadow-xl flex items-center">
+                <i class="fas fa-home mr-2"></i> Bosh sahifaga qaytish
+            </a>
+            <button onclick="history.back()" class="bg-slate-100 text-slate-600 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-slate-200 transition-all">
+                Orqaga qaytish
+            </button>
+        </div>
+    </div>
+
+    <!-- Bezak uchun yorqin doiralar -->
+    <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-indigo-100/30 blur-[100px] rounded-full -z-10"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-100/30 blur-[100px] rounded-full -z-10"></div>
+
+</div>
+{% endblock %}

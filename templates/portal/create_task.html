@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-6" x-data="{ loading: false }">
+
+    <!-- Breadcrumbs (Navigatsiya yo'li) -->
+    <nav class="flex mb-8 text-sm font-medium text-slate-400">
+        <a href="{% url 'home' %}" class="hover:text-indigo-600 transition">Bosh sahifa</a>
+        <span class="mx-2">/</span>
+        <span class="text-slate-900 font-bold italic text-indigo-600">Yangi topshiriq</span>
+    </nav>
+
+    <div class="vibrant-card p-8 md:p-12 border border-slate-100 relative overflow-hidden">
+
+        <!-- Yuklanish qatlami (Overlay) -->
+        <div x-show="loading"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             class="absolute inset-0 bg-white/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center text-center p-6">
+
+            <div class="relative w-24 h-24 mb-6">
+                <!-- Tashqi aylanuvchi doira -->
+                <div class="absolute inset-0 border-4 border-indigo-100 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
+                <!-- Ichki AI ikonka -->
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <i class="fas fa-brain text-3xl text-indigo-600 animate-pulse"></i>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-black text-slate-900 mb-2 italic">Sun'iy intellekt ishlamoqda...</h3>
+            <p class="text-slate-500 font-medium">Topshiriq va metodik yechim tayyorlanmoqda, iltimos kuting.</p>
+        </div>
+
+        <!-- Sarlavha -->
+        <div class="flex items-center space-x-4 mb-10">
+            <div class="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shadow-sm">
+                <i class="fas fa-wand-magic-sparkles text-2xl"></i>
+            </div>
+            <div>
+                <h2 class="text-3xl font-black text-slate-900 italic">Topshiriq yaratish</h2>
+                <p class="text-slate-500 font-medium">Metodika: 2.1-§ bo‘yicha topshiriq generatsiyasi</p>
+            </div>
+        </div>
+
+    <form method="POST" @submit="loading = true" class="space-y-8">
+            {% csrf_token %}
+
+            <!-- Mavzu tanlash -->
+            <div class="space-y-3">
+                <label class="block text-xs font-black text-slate-400 uppercase tracking-[2px] ml-1">Informatika mavzusi</label>
+                <div class="relative">
+                    <select name="topic" class="w-full p-4 pl-12 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-indigo-500 focus:bg-white outline-none transition-all text-slate-700 font-bold appearance-none cursor-pointer">
+                        {% for topic in topics %}
+                            <option value="{{ topic.id }}">{{ topic.title }}</option>
+                        {% endfor %}
+                    </select>
+                    <i class="fas fa-book-open absolute left-4 top-1/2 -translate-y-1/2 text-indigo-400"></i>
+                    <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none text-xs"></i>
+                </div>
+            </div>
+
+            <!-- Murakkablik darajasi -->
+            <div class="space-y-3">
+                <label class="block text-xs font-black text-slate-400 uppercase tracking-[2px] ml-1">Bilim darajasi</label>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                    <!-- Oson -->
+                    <label class="relative group cursor-pointer">
+                        <input type="radio" name="level" value="oson" class="peer hidden" checked>
+                        <div class="p-4 rounded-2xl border-2 border-slate-100 bg-white peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition-all text-center group-hover:border-slate-200">
+                            <i class="fas fa-leaf text-xl text-emerald-400 mb-2 block"></i>
+                            <span class="font-bold text-slate-700 block">Oson</span>
+                        </div>
+                    </label>
+
+                    <!-- O'rta -->
+                    <label class="relative group cursor-pointer">
+                        <input type="radio" name="level" value="o’rta" class="peer hidden">
+                        <div class="p-4 rounded-2xl border-2 border-slate-100 bg-white peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition-all text-center group-hover:border-slate-200">
+                            <i class="fas fa-bolt text-xl text-amber-400 mb-2 block"></i>
+                            <span class="font-bold text-slate-700 block">O'rta</span>
+                        </div>
+                    </label>
+
+                    <!-- Murakkab -->
+                    <label class="relative group cursor-pointer">
+                        <input type="radio" name="level" value="murakkab" class="peer hidden">
+                        <div class="p-4 rounded-2xl border-2 border-slate-100 bg-white peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition-all text-center group-hover:border-slate-200">
+                            <i class="fas fa-fire text-xl text-red-400 mb-2 block"></i>
+                            <span class="font-bold text-slate-700 block">Murakkab</span>
+                        </div>
+                    </label>
+
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit"
+                    :disabled="loading"
+                    class="w-full btn-primary text-white py-5 rounded-[20px] font-black text-lg shadow-xl shadow-indigo-100 flex items-center justify-center space-x-3 transition-all active:scale-95 disabled:opacity-50">
+                <span x-show="!loading">Yaratishni boshlash</span>
+                <i x-show="!loading" class="fas fa-paper-plane text-sm"></i>
+                <span x-show="loading" class="flex items-center italic">
+                    <i class="fas fa-spinner fa-spin mr-3"></i> AI aloqaga chiqmoqda...
+                </span>
+            </button>
+        </form>
+
+        <p class="text-center mt-8 text-xs text-slate-400 font-bold uppercase tracking-widest">
+            <i class="fas fa-shield-halved mr-1"></i> Google Gemini 1.5 Flash texnologiyasi asosida
+        </p>
+
+    </div>
+</div>
+{% endblock %}

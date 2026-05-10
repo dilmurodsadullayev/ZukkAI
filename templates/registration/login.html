@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-md mx-auto px-6 mt-10 md:mt-20">
+    <div class="vibrant-card p-10 border border-slate-100">
+        <h2 class="text-3xl font-black text-slate-900 mb-2">Xush kelibsiz!</h2>
+        <p class="text-slate-500 mb-8 font-medium">Tizimga kirish uchun ma'lumotlarni kiriting.</p>
+
+        <form method="POST" class="space-y-6">
+            {% csrf_token %}
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Foydalanuvchi nomi</label>
+                <input type="text" name="username" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-100 focus:border-indigo-500 outline-none transition" required>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Parol</label>
+                <input type="password" name="password" class="w-full p-4 rounded-xl bg-slate-50 border border-slate-100 focus:border-indigo-500 outline-none transition" required>
+            </div>
+            <button type="submit" class="w-full btn-primary text-white py-4 rounded-xl font-bold text-lg">Kirish</button>
+        </form>
+        
+        <p class="text-center mt-8 text-slate-500">
+            Hisobingiz yo'qmi? <a href="{% url 'register' %}" class="text-indigo-600 font-bold">Ro'yxatdan o'ting</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
