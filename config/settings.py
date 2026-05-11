@@ -47,7 +47,7 @@ DEBUG = get_bool_env("DEBUG", default=False)
 
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -150,3 +150,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Login qilgandan keyin va chiqqandan keyin qayerga o'tishni belgilash
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

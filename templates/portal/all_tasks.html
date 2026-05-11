@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 md:px-6 py-6">
+    
+    <!-- Header va Qidiruv -->
+    <div class="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
+        <div data-aos="fade-right">
+            <h1 class="text-4xl font-black text-slate-900 italic mb-2 tracking-tight">Topshiriqlar kutubxonasi</h1>
+            <p class="text-slate-500 font-medium">Barcha yaratilgan AI topshiriqlar to'plami</p>
+        </div>
+        
+        <!-- Qidiruv Formasi -->
+        <form method="GET" class="w-full md:w-auto flex flex-col sm:flex-row gap-3" data-aos="fade-left">
+            <div class="relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                <input type="text" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Kalit so'z..." 
+                       class="pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl outline-none focus:border-indigo-500 transition-all w-full md:w-64 font-medium">
+            </div>
+            <select name="topic" class="py-3 px-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-indigo-500 transition-all font-bold text-slate-600">
+                <option value="">Barcha mavzular</option>
+                {% for topic in topics %}
+                    <option value="{{ topic.id }}" {% if request.GET.topic == topic.id|stringformat:"i" %}selected{% endif %}>{{ topic.title }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn-primary text-white px-6 py-3 rounded-2xl font-bold">
+                <i class="fas fa-filter"></i>
+            </button>
+        </form>
+    </div>
+
+    <!-- Topshiriqlar Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for task in tasks %}
+        <div class="vibrant-card p-8 border border-slate-100 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-50 transition-all duration-300 flex flex-col group" data-aos="fade-up">
+            
+            <div class="flex justify-between items-start mb-6">
+                <div class="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest italic
+                    {% if task.level == 'oson' %} bg-emerald-50 text-emerald-600 border border-emerald-100
+                    {% elif task.level == 'o’rta' %} bg-amber-50 text-amber-600 border border-amber-100
+                    {% else %} bg-red-50 text-red-600 border border-red-100 {% endif %}">
+                    {{ task.level }}
+                </div>
+                <span class="text-[10px] font-bold text-slate-300 uppercase italic">
+                    {{ task.created_at|date:"d.m.Y" }}
+                </span>
+            </div>
+
+            <h3 class="text-xl font-black text-slate-900 mb-4 line-clamp-2 group-hover:text-indigo-600 transition-colors italic">
+                {{ task.topic.title }}
+            </h3>
+            
+            <p class="text-slate-500 text-sm leading-relaxed mb-8 flex-1 line-clamp-4 italic">
+                {{ task.content|truncatewords:30 }}
+            </p>
+
+            <div class="flex items-center justify-between pt-6 border-t border-slate-50">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
+                        <i class="fas fa-user-tie text-xs"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-400 italic">Admin tomonidan</span>
+                </div>
+                <a href="{% url 'task_detail' task.pk %}" class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full py-20 text-center bg-white rounded-[40px] border-2 border-dashed border-slate-100">
+            <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-slate-200 mx-auto mb-6">
+                <i class="fas fa-folder-open text-4xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-400">Hozircha hech qanday topshiriq yaratilmagan.</h3>
+            <a href="{% url 'create_task' %}" class="text-indigo-600 font-bold mt-4 inline-block hover:underline italic">Yangi topshiriq yaratish →</a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Sahifa pastki qismi -->
+    <div class="mt-20 p-10 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-[40px] text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl shadow-indigo-100">
+        <div class="text-center md:text-left">
+            <h3 class="text-3xl font-black mb-2 italic">O'zingizga mos topshiriq topilmadi-mi?</h3>
+            <p class="text-indigo-100 font-medium">Sun'iy intellektga yangi va noyob topshiriq yaratishni buyuring!</p>
+        </div>
+        <a href="{% url 'create_task' %}" class="bg-white text-indigo-600 px-10 py-5 rounded-2xl font-black text-lg hover:scale-105 transition-all shadow-xl">
+            AI orqali yaratish <i class="fas fa-magic ml-2"></i>
+        </a>
+    </div>
+
+</div>
+{% endblock %}
