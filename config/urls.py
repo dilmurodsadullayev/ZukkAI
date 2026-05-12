@@ -5,7 +5,7 @@ from django.urls import path, include, re_path
 from django.views.static import serve
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('sevaraniki/', admin.site.urls),
     path('', include('portal.urls')),
 ]
 
