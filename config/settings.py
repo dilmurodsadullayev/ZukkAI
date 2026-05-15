@@ -68,6 +68,8 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # Login qilmagan userlarni login sahifaga yuboradi
+    'portal.middleware.LoginRequiredMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -148,7 +150,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Login qilgandan keyin va chiqqandan keyin qayerga o'tishni belgilash
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"

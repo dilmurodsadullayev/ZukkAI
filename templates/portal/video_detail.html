@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 md:px-6 py-6">
+
+    <a href="{% url 'video_list' %}" class="inline-flex items-center text-slate-400 hover:text-indigo-600 mb-8 transition font-bold">
+        <i class="fas fa-arrow-left mr-2"></i> Barcha darslarga qaytish
+    </a>
+
+    <div class="vibrant-card p-4 md:p-8 border border-slate-100 shadow-xl">
+
+        <!-- VIDEO PLAYER -->
+        <div class="aspect-video w-full rounded-3xl overflow-hidden bg-black shadow-2xl mb-5 relative">
+            {% if embed_url %}
+                <iframe
+                    class="w-full h-full"
+                    src="{{ embed_url|safe }}"
+                    title="{{ video.title }}"
+                    frameborder="0"
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen
+                    referrerpolicy="strict-origin-when-cross-origin">
+                </iframe>
+            {% else %}
+                <div class="w-full h-full flex flex-col items-center justify-center text-slate-300 bg-slate-900 p-10 text-center">
+                    <i class="fas fa-exclamation-triangle text-5xl mb-4 text-amber-500"></i>
+                    <p class="font-bold text-white">Video havolasi topilmadi yoki xato!</p>
+                    <p class="text-sm">Admin paneldan to'g'ri YouTube linkini kiriting.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- FALLBACK BUTTON -->
+        {% if watch_url %}
+            <div class="mb-8 p-4 rounded-2xl bg-red-50 border border-red-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h3 class="text-red-600 font-black text-sm uppercase tracking-wider">
+                        Video ochilmayaptimi?
+                    </h3>
+                    <p class="text-slate-500 text-sm font-semibold mt-1">
+                        Ba’zi YouTube videolar iframe ichida ochilmaydi. Bunday holatda videoni YouTube orqali oching.
+                    </p>
+                </div>
+
+                <a href="{{ watch_url|safe }}"
+                   target="_blank"
+                   rel="noopener"
+                   class="inline-flex items-center justify-center px-5 py-3 rounded-2xl bg-red-600 text-white font-black hover:bg-red-700 transition shadow-lg">
+                    <i class="fab fa-youtube mr-2"></i>
+                    YouTube’da ochish
+                </a>
+            </div>
+        {% endif %}
+
+        <div class="px-2">
+            <div class="flex items-center space-x-3 mb-4">
+                <span class="px-4 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-black uppercase tracking-widest italic border border-indigo-100">
+                    {{ video.topic.title }}
+                </span>
+
+                <span class="text-slate-300 text-sm font-bold">
+                    {{ video.created_at|date:"d-M, Y" }}
+                </span>
+            </div>
+
+            <h1 class="text-3xl md:text-4xl font-black text-slate-900 mb-6 italic">
+                {{ video.title }}
+            </h1>
+
+            <div class="p-6 bg-slate-50 rounded-3xl border-l-4 border-indigo-500 italic">
+                <h3 class="text-xs font-black text-indigo-600 uppercase tracking-widest mb-3">
+                    Dars tavsifi:
+                </h3>
+
+                <div class="text-slate-600 leading-relaxed text-lg">
+                    {{ video.description|linebreaks }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

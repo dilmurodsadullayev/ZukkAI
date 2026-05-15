@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 md:px-6">
+    
+    <!-- Sarlavha va Filtr -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+        <div data-aos="fade-right">
+            <h1 class="text-4xl font-black text-slate-900 italic tracking-tight">Videodarslar</h1>
+            <p class="text-slate-500 font-medium mt-1">Informatika fanini video formatda o'rganing</p>
+        </div>
+        
+        <!-- Mavzular bo'yicha filtr -->
+        <div class="flex flex-wrap justify-center gap-3" data-aos="fade-left">
+            <a href="{% url 'video_list' %}" class="px-5 py-2.5 rounded-2xl bg-white border border-slate-200 text-slate-600 font-bold hover:border-indigo-500 transition shadow-sm">Hammasi</a>
+            {% for topic in topics %}
+            <a href="?topic={{ topic.id }}" class="px-5 py-2.5 rounded-2xl bg-white border border-slate-200 text-slate-600 font-bold hover:border-indigo-500 transition shadow-sm">
+                {{ topic.title }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Videolar Gridi -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for video in videos %}
+        <div class="vibrant-card overflow-hidden border border-slate-100 group hover:shadow-2xl transition-all" data-aos="zoom-in">
+            <!-- Video Muqovasi -->
+            <div class="relative aspect-video overflow-hidden">
+                {% if video.thumbnail %}
+                    <img src="{{ video.thumbnail.url }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                {% else %}
+                    <div class="w-full h-full bg-slate-100 flex items-center justify-center">
+                        <i class="fas fa-video text-4xl text-slate-300"></i>
+                    </div>
+                {% endif %}
+                <!-- Davomiyligi (Badge) -->
+                <div class="absolute bottom-3 right-3 bg-black/70 text-white px-2 py-1 rounded-lg text-[10px] font-bold backdrop-blur-md">
+                    {{ video.duration }}
+                </div>
+                <!-- Play tugmasi (Overlay) -->
+                <div class="absolute inset-0 bg-indigo-600/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center text-indigo-600 shadow-xl transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                        <i class="fas fa-play ml-1"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Ma'lumotlari -->
+            <div class="p-6">
+                <span class="text-[10px] font-black uppercase text-indigo-500 tracking-widest">{{ video.topic.title }}</span>
+                <h3 class="text-xl font-bold text-slate-900 mt-2 mb-4 line-clamp-2">{{ video.title }}</h3>
+                <a href="{% url 'video_detail' video.pk %}" class="w-full py-3 bg-slate-50 text-slate-700 rounded-xl font-bold text-center block hover:bg-indigo-600 hover:text-white transition-all">
+                    Darsni ko'rish
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full py-20 text-center">
+            <i class="fas fa-video-slash text-5xl text-slate-200 mb-4"></i>
+            <p class="text-slate-400 font-bold">Hozircha videodarslar mavjud emas.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

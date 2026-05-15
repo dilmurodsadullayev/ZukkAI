@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 md:px-6 py-10" x-data="{ current: 1, total: {{ questions.count }} }">
+    
+    <!-- Test Header -->
+    <div class="vibrant-card p-8 border border-indigo-100 mb-10 bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-xl">
+        <h1 class="text-3xl font-black italic mb-2">{{ quiz.title }}</h1>
+        <div class="flex justify-between items-end">
+            <p class="opacity-80 font-medium italic">Savollarga diqqat bilan javob bering</p>
+            <div class="text-right">
+                <span class="text-4xl font-black" x-text="current"></span>
+                <span class="opacity-60 text-xl font-bold">/ {{ questions.count }}</span>
+            </div>
+        </div>
+        <!-- Progress Bar -->
+        <div class="w-full h-2 bg-white/20 rounded-full mt-6 overflow-hidden">
+            <div class="h-full bg-white transition-all duration-500" :style="'width: ' + (current/total*100) + '%'"></div>
+        </div>
+    </div>
+
+    <!-- Test Formasi -->
+    <form method="POST" class="space-y-8">
+        {% csrf_token %}
+        {% for q in questions %}
+        <div class="vibrant-card p-8 md:p-10 border border-slate-100 shadow-sm" 
+             x-show="current == {{ forloop.counter }}" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-x-12"
+             x-transition:enter-end="opacity-100 translate-x-0">
+            
+            <h3 class="text-2xl font-bold text-slate-800 mb-10 leading-snug">
+                <span class="text-indigo-600 mr-2">#{{ forloop.counter }}</span> {{ q.text }}
+            </h3>
+
+            <div class="grid grid-cols-1 gap-4">
+                {% for key, val in q.CORRECT_CHOICES %}
+                <label class="relative flex items-center p-5 rounded-2xl border-2 border-slate-50 bg-slate-50 cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/50 transition-all group">
+                    <input type="radio" name="question_{{ q.id }}" value="{{ key }}" class="hidden peer" required>
+                    <div class="w-8 h-8 rounded-full border-2 border-slate-300 mr-4 flex items-center justify-center peer-checked:bg-indigo-600 peer-checked:border-indigo-600 transition-all">
+                        <i class="fas fa-check text-xs text-white opacity-0 peer-checked:opacity-100"></i>
+                    </div>
+                    <span class="text-lg font-bold text-slate-600 peer-checked:text-indigo-700 transition-colors">
+                        {% if key == 'A' %}{{ q.option_a }}{% elif key == 'B' %}{{ q.option_b }}{% elif key == 'C' %}{{ q.option_c }}{% else %}{{ q.option_d }}{% endif %}
+                    </span>
+                    <div class="absolute inset-0 border-2 border-transparent peer-checked:border-indigo-600 rounded-2xl pointer-events-none"></div>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-between items-center px-4">
+            <button type="button" @click="current > 1 ? current-- : null" x-show="current > 1" class="px-8 py-4 rounded-2xl bg-white border border-slate-200 text-slate-600 font-black hover:bg-slate-50 transition shadow-sm">
+                <i class="fas fa-chevron-left mr-2"></i> Oldingisi
+            </button>
+            <div class="flex-1"></div>
+            <button type="button" @click="current < total ? current++ : null" x-show="current < total" class="px-8 py-4 rounded-2xl btn-primary text-white font-black shadow-lg">
+                Keyingisi <i class="fas fa-chevron-right ml-2"></i>
+            </button>
+            <button type="submit" x-show="current == total" class="px-10 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-black shadow-lg transition-all animate-pulse">
+                Testni yakunlash <i class="fas fa-flag-checkered ml-2"></i>
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

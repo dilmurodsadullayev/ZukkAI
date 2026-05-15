@@ -1,95 +1,142 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-6">
-    
-    <!-- Hero Section: Yorqin va ochiq -->
-    <div class="relative rounded-[40px] bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-12 md:p-24 text-center overflow-hidden mb-16 border border-white shadow-sm">
-        <!-- Bezaklar -->
-        <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-200/30 blur-3xl rounded-full -mr-20 -mt-20"></div>
-        <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-200/30 blur-3xl rounded-full -ml-20 -mb-20"></div>
+<div class="max-w-7xl mx-auto px-4 md:px-6">
 
-        <div class="relative z-10" data-aos="fade-up">
-            <span class="px-4 py-1.5 rounded-full bg-indigo-100 text-indigo-700 text-sm font-bold tracking-wide uppercase mb-6 inline-block italic">Sun'iy intellekt platformasi</span>
-            <h1 class="text-5xl md:text-7xl font-black text-slate-900 leading-tight mb-8">
-                Informatika darslarini <br>
-                <span class="gradient-text tracking-tighter">Zukko va Oson</span> qiling
+    <!-- HERO SECTION: Platforma tanishtiruvi -->
+    <div class="relative rounded-[40px] bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-8 md:p-20 text-center overflow-hidden mb-16 border border-white shadow-sm" data-aos="zoom-in">
+        <!-- Dekorativ elementlar -->
+        <div class="absolute top-0 right-0 w-80 h-80 bg-indigo-200/20 blur-[100px] rounded-full -mr-40 -mt-40"></div>
+        <div class="absolute bottom-0 left-0 w-80 h-80 bg-purple-200/20 blur-[100px] rounded-full -ml-40 -mb-40"></div>
+
+        <div class="relative z-10">
+            <span class="px-5 py-2 rounded-full bg-indigo-100 text-indigo-700 text-xs font-black tracking-widest uppercase mb-8 inline-block animate-pulse italic">
+                <i class="fas fa-rocket mr-2"></i> Kelajak ta'limi platformasi
+            </span>
+            <h1 class="text-5xl md:text-8xl font-black text-slate-900 leading-none mb-8 tracking-tighter">
+                <span class="italic">Zukko</span><span class="gradient-text">AI</span>
             </h1>
-            <p class="text-slate-500 text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
-                O'qituvchilar uchun vaqtni tejash, o'quvchilar uchun esa sifatli bilim.
-                Informatika fanini o'rganishning eng samarali vositalari endi bitta platformada.
+            <p class="text-slate-500 text-lg md:text-2xl max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
+                Informatika fanini o'rganishning eng zamonaviy va aqlli usuli.
+                Videodarslar, interaktiv testlar va sun'iy intellekt yordamchisi bir joyda.
             </p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="{% url 'create_task' %}" class="btn-primary text-white px-10 py-5 rounded-2xl font-bold text-lg hover:scale-105 transition-all">
-                    Darsni boshlash <i class="fas fa-arrow-right ml-2"></i>
+            <div class="flex flex-col sm:flex-row justify-center gap-5">
+                <a href="{% url 'create_task' %}" class="btn-primary text-white px-10 py-5 rounded-2xl font-black text-xl hover:scale-105 transition-all shadow-2xl shadow-indigo-200 flex items-center justify-center">
+                    Darsni boshlash <i class="fas fa-bolt ml-3 text-sm"></i>
                 </a>
-                <a href="#about" class="bg-white border border-slate-200 text-slate-700 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-slate-50 transition-all shadow-sm">
-                    Tizim haqida
+                <a href="{% url 'video_list' %}" class="bg-white border-2 border-slate-100 text-slate-700 px-10 py-5 rounded-2xl font-black text-xl hover:bg-slate-50 transition-all shadow-sm flex items-center justify-center">
+                    Videodarslar <i class="fas fa-play-circle ml-3 text-indigo-500"></i>
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Features Section: Yorqin kartalar -->
-    <div id="about" class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+    <!-- MAIN FEATURES: Bento Grid Formatida -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-20">
 
-        <!-- Interaktiv Topshiriqlar -->
-        <div class="vibrant-card p-10 border border-indigo-50" data-aos="fade-up" data-aos-delay="100">
-            <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600 mb-8 shadow-sm">
-                <i class="fas fa-magic text-2xl"></i>
+        <!-- 1. AI Topshiriqlar (Kattaroq karta) -->
+        <div class="md:col-span-8 vibrant-card p-10 border border-indigo-100 relative group overflow-hidden" data-aos="fade-right">
+            <div class="relative z-10">
+                <div class="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-white mb-8 shadow-lg shadow-indigo-200 group-hover:rotate-12 transition-transform">
+                    <i class="fas fa-magic text-2xl"></i>
+                </div>
+                <h3 class="text-3xl font-black text-slate-900 mb-4 italic">Aqlli Topshiriqlar</h3>
+                <p class="text-slate-500 text-lg leading-relaxed max-w-md mb-8 font-medium">
+                    Sun'iy intellekt yordamida o'z bilim darajangizga mos topshiriqlar yarating va lahzali tahlilga ega bo'ling.
+                </p>
+                <a href="{% url 'create_task' %}" class="inline-flex items-center font-black text-indigo-600 hover:text-indigo-800 transition">
+                    Hozir sinab ko'rish <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                </a>
             </div>
-            <h3 class="text-2xl font-black text-slate-900 mb-4 italic">Aqlli Topshiriqlar</h3>
-            <p class="text-slate-500 leading-relaxed mb-6 font-medium">
-                Mavzuga oid interaktiv topshiriqlarni sun'iy intellekt yordamida avtomatik generatsiya qilish va dars sifatini oshirish.
-            </p>
-            <div class="h-1.5 w-12 bg-blue-400 rounded-full"></div>
+            <!-- Background Image/Icon -->
+            <i class="fas fa-brain absolute -right-10 -bottom-10 text-[200px] text-indigo-50/50 group-hover:text-indigo-100/50 transition-colors"></i>
         </div>
 
-        <!-- Avtomatik Baholash -->
-        <div class="vibrant-card p-10 border border-purple-50" data-aos="fade-up" data-aos-delay="200">
-            <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 mb-8 shadow-sm">
+        <!-- 2. Testlar (Kichik karta) -->
+        <div class="md:col-span-4 vibrant-card p-10 border border-purple-100 bg-gradient-to-br from-white to-purple-50 group" data-aos="fade-left">
+            <div class="w-16 h-16 bg-purple-500 rounded-2xl flex items-center justify-center text-white mb-8 shadow-lg shadow-purple-200 group-hover:scale-110 transition-transform">
                 <i class="fas fa-check-double text-2xl"></i>
             </div>
-            <h3 class="text-2xl font-black text-slate-900 mb-4 italic">Tezkor Baholash</h3>
-            <p class="text-slate-500 leading-relaxed mb-6 font-medium">
-                O'quvchilar javoblarini AI orqali lahzada tekshirish, ballash va metodik qayta aloqa (Feedback) berish tizimi.
+            <h3 class="text-2xl font-black text-slate-900 mb-4 italic">Interaktiv Testlar</h3>
+            <p class="text-slate-500 leading-relaxed mb-8 font-medium">
+                Bilimingizni mustahkamlash uchun mavzulashtirilgan testlar.
             </p>
-            <div class="h-1.5 w-12 bg-purple-400 rounded-full"></div>
+            <a href="{% url 'quiz_list' %}" class="inline-flex items-center font-black text-purple-600 hover:text-purple-800 transition">
+                Testga o'tish <i class="fas fa-arrow-right ml-2 text-xs"></i>
+            </a>
         </div>
 
-        <!-- Natijalar Tahlili -->
-        <div class="vibrant-card p-10 border border-emerald-50" data-aos="fade-up" data-aos-delay="300">
-            <div class="w-16 h-16 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-600 mb-8 shadow-sm">
-                <i class="fas fa-chart-line text-2xl"></i>
+        <!-- 3. Videodarslar (Kichik karta) -->
+        <div class="md:col-span-4 vibrant-card p-10 border border-emerald-100 bg-gradient-to-br from-white to-emerald-50 group" data-aos="fade-up">
+            <div class="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-white mb-8 shadow-lg shadow-emerald-200 group-hover:-rotate-12 transition-transform">
+                <i class="fas fa-video text-2xl"></i>
             </div>
-            <h3 class="text-2xl font-black text-slate-900 mb-4 italic">Bilim Tahlili</h3>
-            <p class="text-slate-500 leading-relaxed mb-6 font-medium">
-                O'quvchilarning o'zlashtirish natijalarini grafik ko'rinishda kuzatish va ta'lim samaradorligini tahlil qilish.
+            <h3 class="text-2xl font-black text-slate-900 mb-4 italic">Videodarslar</h3>
+            <p class="text-slate-500 leading-relaxed mb-8 font-medium">
+                Murakkab mavzularni video darslar orqali oson o'rganing.
             </p>
-            <div class="h-1.5 w-12 bg-emerald-400 rounded-full"></div>
+            <a href="{% url 'video_list' %}" class="inline-flex items-center font-black text-emerald-600 hover:text-emerald-800 transition">
+                Darslarni ko'rish <i class="fas fa-arrow-right ml-2 text-xs"></i>
+            </a>
         </div>
 
+        <!-- 4. Natijalar Tahlili (Kattaroq karta) -->
+        <div class="md:col-span-8 vibrant-card p-10 border border-amber-100 flex flex-col md:flex-row items-center gap-10" data-aos="fade-up" data-aos-delay="100">
+            <div class="flex-1 text-center md:text-left">
+                <div class="w-16 h-16 bg-amber-500 rounded-2xl flex items-center justify-center text-white mb-8 shadow-lg shadow-amber-200 mx-auto md:mx-0">
+                    <i class="fas fa-chart-pie text-2xl"></i>
+                </div>
+                <h3 class="text-3xl font-black text-slate-900 mb-4 italic">Natijalar Tahlili</h3>
+                <p class="text-slate-500 text-lg leading-relaxed mb-8 font-medium">
+                    O'zingizning o'zlashtirish ko'rsatkichlaringizni kuzatib boring va natijalaringizni yaxshilang.
+                </p>
+                <a href="{% url 'profile' %}" class="btn-primary text-white px-8 py-3 rounded-xl font-bold inline-block shadow-lg">
+                    Kabinetga o'tish
+                </a>
+            </div>
+            <div class="w-full md:w-64 h-48 bg-slate-50 rounded-3xl border border-slate-100 flex items-center justify-center relative overflow-hidden">
+                <!-- Mini diagramma effekti -->
+                <div class="absolute inset-0 flex items-end justify-around px-6 pb-6">
+                    <div class="w-4 bg-indigo-200 rounded-t-lg h-1/2 animate-[bounce_2s_infinite]"></div>
+                    <div class="w-4 bg-indigo-400 rounded-t-lg h-3/4 animate-[bounce_3s_infinite]"></div>
+                    <div class="w-4 bg-indigo-600 rounded-t-lg h-full animate-[bounce_2.5s_infinite]"></div>
+                    <div class="w-4 bg-indigo-300 rounded-t-lg h-2/3 animate-[bounce_4s_infinite]"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Mavzular qatori -->
-    <div class="bg-white rounded-[32px] p-10 border border-slate-100 shadow-sm relative overflow-hidden" data-aos="zoom-in">
-        <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full -mr-16 -mt-16 opacity-50"></div>
+    <!-- TOPICS: O'rganiladigan yo'nalishlar -->
+    <div class="bg-white rounded-[40px] p-8 md:p-12 border border-slate-100 shadow-sm relative overflow-hidden mb-20" data-aos="zoom-in">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50/50 rounded-full -mr-32 -mt-32"></div>
 
-        <div class="flex items-center justify-between mb-10 relative z-10">
-            <h2 class="text-2xl font-black text-slate-900 italic">O'rganiladigan Yo'nalishlar</h2>
-            <div class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-300">
-                <i class="fas fa-chevron-right text-xs"></i>
+        <div class="flex items-center justify-between mb-12 relative z-10">
+            <div>
+                <h2 class="text-3xl font-black text-slate-900 italic tracking-tight">O'rganiladigan Yo'nalishlar</h2>
+                <p class="text-slate-400 font-bold uppercase text-[10px] mt-2 tracking-[4px]">Informatika Kurslari</p>
+            </div>
+            <div class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-300">
+                <i class="fas fa-chevron-right text-sm"></i>
             </div>
         </div>
 
         <div class="flex flex-wrap gap-4 relative z-10">
             {% for topic in topics %}
-            <div class="px-6 py-4 rounded-2xl bg-slate-50 text-slate-700 font-bold border-2 border-transparent hover:border-indigo-200 hover:text-indigo-600 hover:bg-white transition-all cursor-default shadow-sm flex items-center group">
-                <span class="w-2 h-2 bg-indigo-400 rounded-full mr-3 opacity-30 group-hover:opacity-100 transition-opacity"></span>
+            <div class="px-8 py-5 rounded-[24px] bg-slate-50 text-slate-700 font-black border-2 border-transparent hover:border-indigo-500 hover:text-indigo-600 hover:bg-white transition-all cursor-default shadow-sm flex items-center group">
+                <div class="w-2 h-2 bg-indigo-400 rounded-full mr-4 group-hover:scale-[2.5] transition-transform"></div>
                 {{ topic.title }}
             </div>
             {% endfor %}
         </div>
+    </div>
+
+    <!-- CTA SECTION -->
+    <div class="bg-gradient-to-r from-indigo-600 to-purple-700 rounded-[40px] p-12 text-center text-white mb-20 shadow-2xl shadow-indigo-100" data-aos="fade-up">
+        <h2 class="text-4xl font-black mb-6 italic">Bilim olishni bugundan boshlang!</h2>
+        <p class="text-indigo-100 text-lg mb-10 max-w-xl mx-auto font-medium">ZukkoAI — bu sizning informatika olamidagi eng ishonchli va aqlli yordamchingizdir.</p>
+        <a href="{% url 'register' %}" class="bg-white text-indigo-600 px-12 py-5 rounded-2xl font-black text-xl hover:scale-105 transition-all shadow-xl">
+            Bepul Ro'yxatdan o'tish
+        </a>
     </div>
 
 </div>

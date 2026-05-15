@@ -1,34 +1,33 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 md:px-6" x-data="{ editModal: false }">
 
-    <!-- Muvaffaqiyat xabari -->
-    {% if messages %}
-        {% for message in messages %}
-        <div class="mb-6 p-4 bg-emerald-100 text-emerald-700 rounded-2xl font-bold flex items-center shadow-sm">
-            <i class="fas fa-check-circle mr-3"></i> {{ message }}
-        </div>
-        {% endfor %}
-    {% endif %}
+{{ quiz_chart_labels|json_script:"quiz-chart-labels" }}
+{{ quiz_chart_values|json_script:"quiz-chart-values" }}
+{{ ai_chart_labels|json_script:"ai-chart-labels" }}
+{{ ai_chart_values|json_script:"ai-chart-values" }}
 
-    <!-- Yuqori qism: Asosiy ma'lumotlar kartasi -->
-    <div class="vibrant-card p-8 md:p-12 mb-10 border border-slate-100 relative overflow-hidden">
-        <!-- Bezaklar -->
-        <div class="absolute top-0 right-0 w-80 h-80 bg-indigo-50 rounded-full -mr-40 -mt-40 opacity-40"></div>
-        <div class="absolute bottom-0 left-0 w-40 h-40 bg-purple-50 rounded-full -ml-20 -mb-20 opacity-40"></div>
+<div class="max-w-7xl mx-auto px-4 md:px-6" x-data="{ editModal: false }">
 
-        <!-- Edit Tugmasi -->
-        <div class="absolute top-6 right-6 z-20">
-            <button @click="editModal = true" class="w-12 h-12 bg-white text-slate-400 hover:text-indigo-600 rounded-2xl shadow-lg border border-slate-50 transition flex items-center justify-center hover:scale-110 active:scale-95">
+    <!-- PROFILE HERO -->
+    <div class="vibrant-card p-6 md:p-10 lg:p-12 mb-10 border border-slate-100 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-80 h-80 bg-indigo-50 rounded-full -mr-40 -mt-40 opacity-50"></div>
+        <div class="absolute bottom-0 left-0 w-48 h-48 bg-purple-50 rounded-full -ml-24 -mb-24 opacity-60"></div>
+
+        <!-- Edit button -->
+        <div class="absolute top-5 right-5 z-20">
+            <button type="button"
+                    @click="editModal = true"
+                    class="w-12 h-12 bg-white text-slate-400 hover:text-indigo-600 rounded-2xl shadow-lg border border-slate-100 transition flex items-center justify-center hover:scale-110 active:scale-95">
                 <i class="fas fa-pen"></i>
             </button>
         </div>
 
-        <div class="relative z-10 flex flex-col md:flex-row items-center gap-10">
-            <!-- Profil Rasmi -->
-            <div class="relative group">
-                <div class="w-32 h-32 md:w-44 md:h-44 rounded-[40px] overflow-hidden ring-8 ring-indigo-50 shadow-2xl transition-transform group-hover:scale-105 duration-500">
+        <div class="relative z-10 flex flex-col lg:flex-row items-center gap-10">
+
+            <!-- Avatar -->
+            <div class="relative group shrink-0">
+                <div class="w-32 h-32 md:w-44 md:h-44 rounded-[40px] overflow-hidden ring-8 ring-indigo-50 shadow-2xl transition-transform group-hover:scale-105 duration-500 bg-slate-100">
                     {% if user.profile.image %}
                         <img src="{{ user.profile.image.url }}" alt="{{ user.username }}" class="w-full h-full object-cover">
                     {% else %}
@@ -37,122 +36,589 @@
                         </div>
                     {% endif %}
                 </div>
+
                 <div class="absolute -bottom-4 -right-4 bg-emerald-500 text-white px-4 py-2 rounded-2xl font-bold shadow-lg border-4 border-white">
-                    {{ user.profile.total_points }} ball
+                    {{ user.profile.total_points|default:0 }} ball
                 </div>
             </div>
 
-            <!-- Foydalanuvchi ma'lumotlari -->
-            <div class="flex-1 text-center md:text-left">
-                <div class="flex flex-col md:flex-row items-center md:items-end gap-3 mb-4">
-                    <h1 class="text-4xl font-black text-slate-900">{{ user.first_name }} {{ user.last_name|default:user.username }}</h1>
-                    <span class="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-lg text-xs font-bold uppercase mb-1 tracking-widest">O'quvchi</span>
+            <!-- User info -->
+            <div class="flex-1 text-center lg:text-left">
+                <div class="flex flex-col lg:flex-row items-center lg:items-end gap-3 mb-4">
+                    <h1 class="text-3xl md:text-5xl font-black text-slate-900 leading-tight">
+                        {{ user.get_full_name|default:user.username }}
+                    </h1>
+
+                    <span class="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-lg text-xs font-bold uppercase mb-1 tracking-widest">
+                        O'quvchi
+                    </span>
                 </div>
 
-                <p class="text-slate-500 text-lg font-medium max-w-xl mb-6">
+                <p class="text-slate-500 text-base md:text-lg font-medium max-w-2xl mb-6">
                     {{ user.profile.bio|default:"Hali o'zi haqida ma'lumot kiritmagan." }}
                 </p>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8 text-sm">
-                    <div class="flex items-center space-x-3 text-slate-600">
-                        <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-indigo-500 shadow-sm">
+                    <div class="flex items-center justify-center lg:justify-start space-x-3 text-slate-600">
+                        <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-indigo-500 shadow-sm">
                             <i class="fas fa-envelope"></i>
                         </div>
-                        <span class="font-bold">{{ user.email|default:"Email yo'q" }}</span>
+                        <span class="font-bold break-all">{{ user.email|default:"Email yo'q" }}</span>
                     </div>
-                    <div class="flex items-center space-x-3 text-slate-600">
-                        <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-indigo-500 shadow-sm">
+
+                    <div class="flex items-center justify-center lg:justify-start space-x-3 text-slate-600">
+                        <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-indigo-500 shadow-sm">
                             <i class="fas fa-phone"></i>
                         </div>
                         <span class="font-bold">{{ user.profile.phone_number|default:"+998 -- --- -- --" }}</span>
                     </div>
-                    <div class="flex items-center space-x-3 text-slate-600">
-                        <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-indigo-500 shadow-sm">
+
+                    <div class="flex items-center justify-center lg:justify-start space-x-3 text-slate-600">
+                        <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-indigo-500 shadow-sm">
                             <i class="fas fa-school"></i>
                         </div>
                         <span class="font-bold">{{ user.profile.school|default:"Ma'lumot yo'q" }}</span>
                     </div>
-                    <div class="flex items-center space-x-3 text-slate-600">
-                        <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-indigo-500 shadow-sm">
+
+                    <div class="flex items-center justify-center lg:justify-start space-x-3 text-slate-600">
+                        <div class="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-indigo-500 shadow-sm">
                             <i class="fas fa-graduation-cap"></i>
                         </div>
                         <span class="font-bold">{{ user.profile.grade|default:"-" }} - sinf/kurs</span>
                     </div>
                 </div>
             </div>
+
+            <!-- Overall progress -->
+            <div class="w-full lg:w-64 shrink-0">
+                <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-[32px] p-6 text-white shadow-xl shadow-indigo-100">
+                    <p class="text-indigo-100 text-sm font-black uppercase tracking-widest mb-2">
+                        Umumiy progress
+                    </p>
+
+                    <div class="flex items-end gap-2 mb-4">
+                        <span class="text-5xl font-black">{{ overall_score|default:0 }}</span>
+                        <span class="text-indigo-100 font-bold mb-2">%</span>
+                    </div>
+
+                    <div class="w-full h-3 bg-white/20 rounded-full overflow-hidden mb-4">
+                        <div class="h-full bg-white rounded-full" style="width: {{ overall_score|default:0 }}%;"></div>
+                    </div>
+
+                    <p class="text-indigo-100 text-sm leading-relaxed">
+                        Jami faoliyat:
+                        <b class="text-white">{{ total_activities|default:0 }}</b> ta
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Pastki qism: Statistika va Harakatlar -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Statistika Kartalari -->
-        <div class="lg:col-span-1 space-y-6">
-            <h3 class="text-xl font-bold text-slate-900 px-2 italic">Yutuqlar</h3>
-            <div class="vibrant-card p-6 border border-slate-100 flex items-center justify-between shadow-sm">
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-fire text-xl"></i>
-                    </div>
-                    <span class="font-bold text-slate-700">Topshiriqlar</span>
-                </div>
-                <span class="text-2xl font-black text-slate-900">{{ total_tasks }}</span>
-            </div>
-            <div class="vibrant-card p-6 border border-slate-100 flex items-center justify-between shadow-sm">
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-star text-xl"></i>
-                    </div>
-                    <span class="font-bold text-slate-700">O'rtacha ball</span>
-                </div>
-                <span class="text-2xl font-black text-slate-900">{{ avg_score }}</span>
-            </div>
+    <!-- MAIN STAT CARDS -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
 
-            <div class="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-[32px] text-white shadow-xl shadow-indigo-100">
-                <h4 class="text-lg font-bold mb-4 italic">Metodik tavsiya:</h4>
-                <p class="text-indigo-100 text-sm leading-relaxed mb-6">
-                    Sizning hozirgi samaradorligingiz o'rtacha darajada. AI darslaridan ko'proq foydalanishni tavsiya qilamiz.
-                </p>
-                <a href="{% url 'create_task' %}" class="block w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-center font-bold transition">Darsni boshlash</a>
+        <div class="vibrant-card p-5 md:p-6 border border-slate-100">
+            <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mb-4">
+                <i class="fas fa-brain text-xl"></i>
             </div>
+            <p class="text-slate-400 text-xs md:text-sm font-black uppercase tracking-wider">
+                AI topshiriqlar
+            </p>
+            <h3 class="text-3xl font-black text-slate-900 mt-1">
+                {{ total_ai_tasks|default:0 }}
+            </h3>
         </div>
 
-        <!-- Oxirgi topshiriqlar -->
-        <div class="lg:col-span-2 space-y-6">
-            <h3 class="text-xl font-bold text-slate-900 px-2 italic">Oxirgi natijalar</h3>
-            {% for item in submissions %}
-            <div class="vibrant-card p-6 border border-slate-100 hover:border-indigo-200 transition-all flex items-center justify-between group shadow-sm">
-                <div class="flex items-center space-x-5">
-                    <div class="w-14 h-14 bg-slate-50 rounded-2xl flex flex-col items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition">
-                        <span class="text-xs font-bold">{{ item.submitted_at|date:"d" }}</span>
-                        <span class="text-[10px] uppercase font-black">{{ item.submitted_at|date:"M" }}</span>
+        <div class="vibrant-card p-5 md:p-6 border border-slate-100">
+            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-4">
+                <i class="fas fa-star text-xl"></i>
+            </div>
+            <p class="text-slate-400 text-xs md:text-sm font-black uppercase tracking-wider">
+                AI o'rtacha
+            </p>
+            <h3 class="text-3xl font-black text-slate-900 mt-1">
+                {{ avg_ai_score|default:0 }}
+            </h3>
+        </div>
+
+        <div class="vibrant-card p-5 md:p-6 border border-slate-100">
+            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-4">
+                <i class="fas fa-circle-question text-xl"></i>
+            </div>
+            <p class="text-slate-400 text-xs md:text-sm font-black uppercase tracking-wider">
+                Testlar
+            </p>
+            <h3 class="text-3xl font-black text-slate-900 mt-1">
+                {{ total_quizzes|default:0 }}
+            </h3>
+        </div>
+
+        <div class="vibrant-card p-5 md:p-6 border border-slate-100">
+            <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mb-4">
+                <i class="fas fa-bullseye text-xl"></i>
+            </div>
+            <p class="text-slate-400 text-xs md:text-sm font-black uppercase tracking-wider">
+                Aniqlik
+            </p>
+            <h3 class="text-3xl font-black text-slate-900 mt-1">
+                {{ accuracy_percent|default:0 }}%
+            </h3>
+        </div>
+
+    </div>
+
+    <!-- RECOMMENDATION AND DETAIL STATS -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+
+        <!-- Recommendation -->
+        <div class="lg:col-span-1">
+            <div class="bg-gradient-to-br from-indigo-600 to-purple-700 p-7 md:p-8 rounded-[32px] text-white shadow-xl shadow-indigo-100 h-full">
+                <div class="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mb-5 border border-white/20">
+                    <i class="fas fa-lightbulb text-2xl"></i>
+                </div>
+
+                <h4 class="text-xl font-black mb-4 italic">
+                    {{ recommendation_title|default:"Boshlash vaqti keldi!" }}
+                </h4>
+
+                <p class="text-indigo-100 text-sm leading-relaxed mb-6">
+                    {{ recommendation_text|default:"Avval videodarslarni ko'ring, keyin test va AI topshiriqlarni bajaring." }}
+                </p>
+
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div class="bg-white/10 border border-white/10 rounded-2xl p-4">
+                        <p class="text-2xl font-black">{{ best_ai_score|default:0 }}</p>
+                        <p class="text-xs text-indigo-100 font-bold">Eng yaxshi AI ball</p>
                     </div>
-                    <div>
-                        <h4 class="font-bold text-slate-800">{{ item.task.topic.title }}</h4>
-                        <p class="text-xs text-slate-400 font-bold uppercase">{{ item.task.level }} daraja</p>
+
+                    <div class="bg-white/10 border border-white/10 rounded-2xl p-4">
+                        <p class="text-2xl font-black">{{ best_quiz_score|default:0 }}%</p>
+                        <p class="text-xs text-indigo-100 font-bold">Eng yaxshi test</p>
                     </div>
                 </div>
-                <div class="flex items-center space-x-6">
-                    <div class="text-right">
-                        <p class="text-2xl font-black text-indigo-600">{{ item.ai_score }}</p>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Ball</p>
-                    </div>
-                    <a href="{% url 'results' %}" class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:bg-indigo-600 hover:text-white transition">
-                        <i class="fas fa-arrow-right text-sm"></i>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+                    <a href="{% url 'create_task' %}" class="block w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-center font-bold transition">
+                        AI topshiriq boshlash
+                    </a>
+
+                    <a href="{% url 'quiz_list' %}" class="block w-full py-3 bg-white text-indigo-600 rounded-xl text-center font-black transition hover:bg-indigo-50">
+                        Test ishlash
                     </a>
                 </div>
             </div>
-            {% empty %}
-            <div class="vibrant-card p-12 text-center border-2 border-dashed border-slate-200">
-                <i class="fas fa-receipt text-4xl text-slate-200 mb-4"></i>
-                <p class="text-slate-400 font-bold">Hali topshiriq bajarilmagan.</p>
+        </div>
+
+        <!-- Test and AI detail stats -->
+        <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Quiz stats -->
+            <div class="vibrant-card p-6 border border-slate-100">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h3 class="text-xl font-black text-slate-900">Test statistikasi</h3>
+                        <p class="text-sm text-slate-400 font-bold">Quiz natijalari bo'yicha</p>
+                    </div>
+                    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                </div>
+
+                <div class="space-y-5">
+                    <div>
+                        <div class="flex justify-between mb-2 text-sm font-bold">
+                            <span class="text-slate-500">O'rtacha test natijasi</span>
+                            <span class="text-slate-900">{{ avg_quiz_score|default:0 }}%</span>
+                        </div>
+                        <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-emerald-500 rounded-full" style="width: {{ avg_quiz_score|default:0 }}%;"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between mb-2 text-sm font-bold">
+                            <span class="text-slate-500">To'g'ri javoblar</span>
+                            <span class="text-slate-900">{{ total_correct|default:0 }}/{{ total_questions|default:0 }}</span>
+                        </div>
+                        <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-indigo-500 rounded-full" style="width: {{ accuracy_percent|default:0 }}%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <div class="bg-slate-50 rounded-2xl p-4">
+                            <p class="text-2xl font-black text-slate-900">{{ total_quizzes|default:0 }}</p>
+                            <p class="text-xs text-slate-400 font-bold uppercase">Topshirilgan test</p>
+                        </div>
+
+                        <div class="bg-slate-50 rounded-2xl p-4">
+                            <p class="text-2xl font-black text-slate-900">{{ best_quiz_score|default:0 }}%</p>
+                            <p class="text-xs text-slate-400 font-bold uppercase">Eng yuqori</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            {% endfor %}
-            <a href="{% url 'results' %}" class="block text-center text-slate-400 font-bold text-sm hover:text-indigo-600 transition pt-4">Barcha natijalarni ko'rish <i class="fas fa-chevron-right ml-1 text-[10px]"></i></a>
+
+            <!-- AI stats -->
+            <div class="vibrant-card p-6 border border-slate-100">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h3 class="text-xl font-black text-slate-900">AI statistikasi</h3>
+                        <p class="text-sm text-slate-400 font-bold">AI topshiriqlar bo'yicha</p>
+                    </div>
+                    <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                </div>
+
+                <div class="space-y-5">
+                    <div>
+                        <div class="flex justify-between mb-2 text-sm font-bold">
+                            <span class="text-slate-500">O'rtacha AI ball</span>
+                            <span class="text-slate-900">{{ avg_ai_score|default:0 }}</span>
+                        </div>
+                        <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-indigo-500 rounded-full" style="width: {{ avg_ai_score|default:0 }}%;"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between mb-2 text-sm font-bold">
+                            <span class="text-slate-500">Jami AI ball</span>
+                            <span class="text-slate-900">{{ total_ai_score|default:0 }}</span>
+                        </div>
+                        <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-purple-500 rounded-full" style="width: {{ overall_score|default:0 }}%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <div class="bg-slate-50 rounded-2xl p-4">
+                            <p class="text-2xl font-black text-slate-900">{{ total_ai_tasks|default:0 }}</p>
+                            <p class="text-xs text-slate-400 font-bold uppercase">Topshiriq</p>
+                        </div>
+
+                        <div class="bg-slate-50 rounded-2xl p-4">
+                            <p class="text-2xl font-black text-slate-900">{{ best_ai_score|default:0 }}</p>
+                            <p class="text-xs text-slate-400 font-bold uppercase">Eng yuqori</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- Modalni bu yerga chaqiramiz -->
-    {% include 'portal/edit_modal.html' %}
+    <!-- CHARTS -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
 
+        <!-- Quiz chart -->
+        <div class="vibrant-card p-6 border border-slate-100">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-xl font-black text-slate-900">Test o'sish grafigi</h3>
+                    <p class="text-sm text-slate-400 font-bold">Oxirgi 7 ta test foizi</p>
+                </div>
+                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+            </div>
+
+            {% if quiz_chart_values %}
+                <div class="h-72">
+                    <canvas id="quizChart"></canvas>
+                </div>
+            {% else %}
+                <div class="h-72 flex flex-col items-center justify-center text-center border-2 border-dashed border-slate-100 rounded-3xl">
+                    <i class="fas fa-chart-line text-4xl text-slate-200 mb-4"></i>
+                    <p class="text-slate-400 font-bold">Hali test grafigi uchun ma'lumot yo'q.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- AI chart -->
+        <div class="vibrant-card p-6 border border-slate-100">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-xl font-black text-slate-900">AI ball grafigi</h3>
+                    <p class="text-sm text-slate-400 font-bold">Oxirgi 7 ta AI topshiriq</p>
+                </div>
+                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-chart-column"></i>
+                </div>
+            </div>
+
+            {% if ai_chart_values %}
+                <div class="h-72">
+                    <canvas id="aiChart"></canvas>
+                </div>
+            {% else %}
+                <div class="h-72 flex flex-col items-center justify-center text-center border-2 border-dashed border-slate-100 rounded-3xl">
+                    <i class="fas fa-chart-column text-4xl text-slate-200 mb-4"></i>
+                    <p class="text-slate-400 font-bold">Hali AI grafigi uchun ma'lumot yo'q.</p>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- TOPIC STATS -->
+    <div class="vibrant-card p-6 md:p-8 border border-slate-100 mb-10">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <div>
+                <h3 class="text-2xl font-black text-slate-900">Mavzular bo'yicha natijalar</h3>
+                <p class="text-slate-400 font-bold text-sm mt-1">
+                    AI topshiriq va testlardan kelib chiqqan umumiy tahlil
+                </p>
+            </div>
+
+            <a href="{% url 'video_list' %}" class="inline-flex items-center justify-center px-5 py-3 rounded-2xl bg-indigo-50 text-indigo-600 font-black hover:bg-indigo-600 hover:text-white transition">
+                <i class="fas fa-play-circle mr-2"></i>
+                Videodarslar
+            </a>
+        </div>
+
+        {% if topic_stats %}
+            <div class="space-y-5">
+                {% for item in topic_stats %}
+                    <div class="p-4 rounded-3xl bg-slate-50 border border-slate-100">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
+                            <div>
+                                <h4 class="font-black text-slate-800">{{ item.topic }}</h4>
+                                <p class="text-xs text-slate-400 font-bold uppercase mt-1">
+                                    AI: {{ item.ai_count }} ta · Test: {{ item.quiz_count }} ta
+                                </p>
+                            </div>
+
+                            <span class="text-2xl font-black text-indigo-600">
+                                {{ item.percent }}%
+                            </span>
+                        </div>
+
+                        <div class="w-full h-3 bg-white rounded-full overflow-hidden">
+                            <div class="h-full bg-indigo-500 rounded-full" style="width: {{ item.percent }}%;"></div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="p-12 text-center border-2 border-dashed border-slate-100 rounded-3xl">
+                <i class="fas fa-layer-group text-4xl text-slate-200 mb-4"></i>
+                <p class="text-slate-400 font-bold">Hali mavzular bo'yicha statistika mavjud emas.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- RECENT RESULTS -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        <!-- Recent quiz results -->
+        <div class="space-y-5">
+            <div class="flex items-center justify-between px-2">
+                <h3 class="text-xl font-black text-slate-900 italic">Oxirgi test natijalari</h3>
+
+                <a href="{% url 'quiz_list' %}" class="text-sm font-black text-indigo-600 hover:text-indigo-700">
+                    Testlar
+                </a>
+            </div>
+
+            {% for item in quiz_results %}
+                <div class="vibrant-card p-5 md:p-6 border border-slate-100 hover:border-emerald-200 transition-all shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex flex-col items-center justify-center text-emerald-600">
+                                <span class="text-xs font-bold">{{ item.completed_at|date:"d" }}</span>
+                                <span class="text-[10px] uppercase font-black">{{ item.completed_at|date:"M" }}</span>
+                            </div>
+
+                            <div>
+                                <h4 class="font-black text-slate-800">{{ item.quiz.title }}</h4>
+                                <p class="text-xs text-slate-400 font-bold uppercase">
+                                    {{ item.quiz.topic.title }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between sm:justify-end gap-5">
+                            <div class="text-right">
+                                <p class="text-2xl font-black text-emerald-600">
+                                    {{ item.score }}/{{ item.total_questions }}
+                                </p>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase">
+                                    {{ item.percentage|floatformat:1 }}%
+                                </p>
+                            </div>
+
+                            <a href="{% url 'quiz_detail' item.quiz.id %}"
+                               class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:bg-emerald-600 hover:text-white transition">
+                                <i class="fas fa-arrow-right text-sm"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="vibrant-card p-12 text-center border-2 border-dashed border-slate-200">
+                    <i class="fas fa-circle-question text-4xl text-slate-200 mb-4"></i>
+                    <p class="text-slate-400 font-bold">Hali test ishlanmagan.</p>
+
+                    <a href="{% url 'quiz_list' %}" class="inline-flex mt-5 px-5 py-3 rounded-2xl bg-indigo-600 text-white font-black hover:bg-indigo-700 transition">
+                        Test boshlash
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Recent AI results -->
+        <div class="space-y-5">
+            <div class="flex items-center justify-between px-2">
+                <h3 class="text-xl font-black text-slate-900 italic">Oxirgi AI natijalari</h3>
+
+                <a href="{% url 'results' %}" class="text-sm font-black text-indigo-600 hover:text-indigo-700">
+                    Barchasi
+                </a>
+            </div>
+
+            {% for item in ai_submissions %}
+                <div class="vibrant-card p-5 md:p-6 border border-slate-100 hover:border-indigo-200 transition-all shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-14 h-14 bg-indigo-50 rounded-2xl flex flex-col items-center justify-center text-indigo-600">
+                                <span class="text-xs font-bold">{{ item.submitted_at|date:"d" }}</span>
+                                <span class="text-[10px] uppercase font-black">{{ item.submitted_at|date:"M" }}</span>
+                            </div>
+
+                            <div>
+                                <h4 class="font-black text-slate-800">{{ item.task.topic.title }}</h4>
+                                <p class="text-xs text-slate-400 font-bold uppercase">
+                                    {{ item.task.level }} daraja
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between sm:justify-end gap-5">
+                            <div class="text-right">
+                                <p class="text-2xl font-black text-indigo-600">
+                                    {{ item.ai_score|default:0 }}
+                                </p>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase">
+                                    Ball
+                                </p>
+                            </div>
+
+                            <a href="{% url 'results' %}"
+                               class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 hover:bg-indigo-600 hover:text-white transition">
+                                <i class="fas fa-arrow-right text-sm"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="vibrant-card p-12 text-center border-2 border-dashed border-slate-200">
+                    <i class="fas fa-robot text-4xl text-slate-200 mb-4"></i>
+                    <p class="text-slate-400 font-bold">Hali AI topshiriq bajarilmagan.</p>
+
+                    <a href="{% url 'create_task' %}" class="inline-flex mt-5 px-5 py-3 rounded-2xl bg-indigo-600 text-white font-black hover:bg-indigo-700 transition">
+                        AI topshiriq boshlash
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+    {% include 'portal/edit_modal.html' %}
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const quizLabelsElement = document.getElementById("quiz-chart-labels");
+    const quizValuesElement = document.getElementById("quiz-chart-values");
+    const aiLabelsElement = document.getElementById("ai-chart-labels");
+    const aiValuesElement = document.getElementById("ai-chart-values");
+
+    const quizLabels = quizLabelsElement ? JSON.parse(quizLabelsElement.textContent) : [];
+    const quizValues = quizValuesElement ? JSON.parse(quizValuesElement.textContent) : [];
+    const aiLabels = aiLabelsElement ? JSON.parse(aiLabelsElement.textContent) : [];
+    const aiValues = aiValuesElement ? JSON.parse(aiValuesElement.textContent) : [];
+
+    function createLineChart(canvasId, labels, values, label, borderColor, bgColor) {
+        const canvas = document.getElementById(canvasId);
+
+        if (!canvas || labels.length === 0 || values.length === 0) {
+            return;
+        }
+
+        new Chart(canvas, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    data: values,
+                    borderColor: borderColor,
+                    backgroundColor: bgColor,
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            font: {
+                                weight: "bold"
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 100,
+                        ticks: {
+                            font: {
+                                weight: "bold"
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                weight: "bold"
+                            },
+                            maxRotation: 35,
+                            minRotation: 0
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    createLineChart(
+        "quizChart",
+        quizLabels,
+        quizValues,
+        "Test natijasi (%)",
+        "#10b981",
+        "rgba(16, 185, 129, 0.12)"
+    );
+
+    createLineChart(
+        "aiChart",
+        aiLabels,
+        aiValues,
+        "AI ball",
+        "#4f46e5",
+        "rgba(79, 70, 229, 0.12)"
+    );
+</script>
+
 {% endblock %}

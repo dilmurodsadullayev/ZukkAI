@@ -129,3 +129,87 @@ class Feedback(models.Model):
     class Meta:
         verbose_name = "Fikr-mulohaza"
         verbose_name_plural = "Fikr-mulohazalar"
+
+
+# --- 1. VIDEODARSLAR MODELI ---
+class VideoLesson(models.Model):
+    topic = models.ForeignKey('Topic', on_delete=models.CASCADE, related_name='videos', verbose_name="Mavzu")
+    title = models.CharField(max_length=255, verbose_name="Dars sarlavhasi")
+    thumbnail = models.ImageField(upload_to='video_thumbnails/', null=True, blank=True,
+                                  verbose_name="Video muqovasi (rasm)")
+    video_url = models.URLField(help_text="YouTube video linkini kiriting", verbose_name="Video havolasi (URL)")
+    description = models.TextField(blank=True, null=True, verbose_name="Dars haqida qisqacha")
+    duration = models.CharField(max_length=50, help_text="Masalan: 12:45", verbose_name="Davomiyligi")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Videodars"
+        verbose_name_plural = "Videodarslar"
+
+
+# --- 2. TESTLAR (QUIZ) MODELI ---
+class Quiz(models.Model):
+    topic = models.ForeignKey('Topic', on_delete=models.CASCADE, related_name='quizzes', verbose_name="Mavzu")
+    title = models.CharField(max_length=255, verbose_name="Test nomi")
+    description = models.TextField(blank=True, null=True, verbose_name="Tavsif")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.topic.title})"
+
+    class Meta:
+        verbose_name = "Test to'plami"
+        verbose_name_plural = "Test to'plamlari"
+
+
+# --- 3. SAVOLLAR MODELI ---
+class Question(models.Model):
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='questions', verbose_name="Test to'plami")
+    text = models.TextField(verbose_name="Savol matni")
+
+    # Variantlar
+    option_a = models.CharField(max_length=255, verbose_name="A varianti")
+    option_b = models.CharField(max_length=255, verbose_name="B varianti")
+    option_c = models.CharField(max_length=255, verbose_name="C varianti")
+    option_d = models.CharField(max_length=255, verbose_name="D varianti")
+
+    # To'g'ri javob
+    CORRECT_CHOICES = [
+        ('A', 'A varianti'),
+        ('B', 'B varianti'),
+        ('C', 'C varianti'),
+        ('D', 'D varianti'),
+    ]
+    correct_answer = models.CharField(max_length=1, choices=CORRECT_CHOICES, verbose_name="To'g'ri javob")
+
+    def __str__(self):
+        return self.text[:50]
+
+    class Meta:
+        verbose_name = "Savol"
+        verbose_name_plural = "Savollar"
+
+
+# --- 4. TEST NATIJALARI MODELI ---
+class QuizSubmission(models.Model):
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='quiz_attempts', verbose_name="O'quvchi")
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, verbose_name="Test nomi")
+    score = models.IntegerField(verbose_name="To'plangan ball")
+    total_questions = models.IntegerField(verbose_name="Jami savollar soni")
+    completed_at = models.DateTimeField(auto_now_add=True, verbose_name="Topshirilgan vaqt")
+
+    def __str__(self):
+        return f"{self.student.username} - {self.quiz.title} ({self.score}/{self.total_questions})"
+
+    @property
+    def percentage(self):
+        if self.total_questions > 0:
+            return (self.score / self.total_questions) * 100
+        return 0
+
+    class Meta:
+        verbose_name = "Test natijasi"
+        verbose_name_plural = "Test natijalari"

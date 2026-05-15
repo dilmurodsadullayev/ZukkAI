@@ -19,4 +19,9 @@ urlpatterns = [
     path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(),
          name='password_reset_confirm'),
     path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+
+    path('videos/', views.video_list_view, name='video_list'),
+    path('video/<int:pk>/', views.video_detail_view, name='video_detail'),
+    path('quizzes/', views.quiz_list_view, name='quiz_list'),
+    path('quiz/<int:pk>/', views.quiz_detail_view, name='quiz_detail'),
 ]
