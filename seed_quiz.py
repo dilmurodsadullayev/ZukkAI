@@ -3,7 +3,6 @@
 import os
 import django
 
-# Agar project settings noming boshqacha bo'lsa, config.settings ni almashtirasan
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
 
@@ -11,105 +10,82 @@ from django.db import transaction
 from portal.models import Topic, Quiz, Question
 
 
+DELETE_OLD_QUIZZES_FOR_THESE_TOPICS = True
+
+
 TOPICS = [
     {
-        "title": "Algoritmlash asoslari",
-        "description": "Algoritm tushunchasi, blok-sxemalar, masalalarni bosqichma-bosqich yechish va dasturlashga tayyorlash asoslari o‘rganiladi.",
-    },
-    {
         "title": "Python dasturlash tili",
-        "description": "Python dasturlash tilining sintaksisi, o‘zgaruvchilar, shart operatorlari, sikllar, funksiyalar va amaliy dasturlar yaratish o‘rganiladi.",
+        "description": "Python dasturlash tili orqali o‘quvchilar dasturlash asoslari, o‘zgaruvchilar, shart operatorlari, sikllar, funksiyalar va oddiy dasturlar yaratishni o‘rganadilar.",
     },
     {
         "title": "Ma’lumotlar bazasi (SQL)",
-        "description": "Ma’lumotlar bazasi tushunchasi, jadvallar, SQL so‘rovlari, SELECT, INSERT, UPDATE, DELETE va bog‘langan jadvallar bilan ishlash o‘rganiladi.",
-    },
-    {
-        "title": "Ob’ektga yo‘naltirilgan dasturlash",
-        "description": "Class, object, meros olish, inkapsulyatsiya, polimorfizm va real loyihalarda OOP yondashuvlaridan foydalanish o‘rganiladi.",
+        "description": "Ma’lumotlar bazasi mavzusida jadvallar, ustunlar, yozuvlar, SQL so‘rovlari, SELECT, INSERT, UPDATE, DELETE va ma’lumotlar bilan ishlash asoslari o‘rganiladi.",
     },
     {
         "title": "Kompyuter tarmoqlari",
-        "description": "Kompyuter tarmoqlari, IP manzillar, DNS, HTTP/HTTPS, router, server va mijoz o‘rtasidagi aloqa asoslari o‘rganiladi.",
-    },
-    {
-        "title": "Sun’iy intellekt va mashinaviy o‘rganish",
-        "description": "Sun’iy intellekt tushunchasi, mashinaviy o‘rganish asoslari, ma’lumotlar bilan ishlash, model o‘qitish va bashorat qilish jarayonlari o‘rganiladi.",
-    },
-    {
-        "title": "Web-dasturlash (Frontend)",
-        "description": "HTML, CSS, JavaScript, sahifa tuzilmasi, dizayn, responsiv interfeys va foydalanuvchi bilan ishlovchi web sahifalar yaratish o‘rganiladi.",
+        "description": "Kompyuter tarmoqlari mavzusida lokal va global tarmoqlar, IP manzillar, DNS, router, server, mijoz va internet orqali ma’lumot almashish jarayoni o‘rganiladi.",
     },
     {
         "title": "Axborot xavfsizligi",
-        "description": "Axborotlarni himoyalash, parollar xavfsizligi, shifrlash, tarmoq xavfsizligi, zararli dasturlar va himoya usullari o‘rganiladi.",
-    },
-    {
-        "title": "Kompyuter grafikasi",
-        "description": "Grafik obyektlar, ranglar, tasvirlar bilan ishlash, 2D/3D grafika asoslari va kompyuter grafikasi dasturlari haqida bilim beriladi.",
+        "description": "Axborot xavfsizligi mavzusida shaxsiy ma’lumotlarni himoyalash, parollar xavfsizligi, zararli dasturlar, viruslar, fishing hujumlari va himoya usullari o‘rganiladi.",
     },
     {
         "title": "Operatsion tizimlar",
-        "description": "Operatsion tizim tushunchasi, fayl tizimi, jarayonlar, xotira boshqaruvi, Linux va Windows tizimlarining asosiy ishlash prinsiplari o‘rganiladi.",
+        "description": "Operatsion tizimlar mavzusida Windows, Linux, fayllar tizimi, jarayonlar, xotira boshqaruvi, dasturlarni ishga tushirish va tizim resurslarini boshqarish o‘rganiladi.",
     },
     {
         "title": "10-sinf informatika",
-        "description": "10-sinf informatika fanida algoritmlash, dasturlash asoslari, ma’lumotlar bilan ishlash, kompyuter tizimlari, internet texnologiyalari va axborot xavfsizligi bo‘yicha asosiy bilimlar o‘rganiladi.",
+        "description": "10-sinf informatika mavzusida algoritmlash, dasturlash, axborot texnologiyalari, internet, ma’lumotlar bilan ishlash va kompyuter savodxonligi bo‘yicha bilimlar beriladi.",
+    },
+    {
+        "title": "Elektron jadvallar",
+        "description": "Elektron jadvallar mavzusida Excel yoki Google Sheets dasturlarida jadval yaratish, kataklar bilan ishlash, formulalar, funksiyalar va diagrammalar tuzish o‘rganiladi.",
+    },
+    {
+        "title": "3D modellashtirish",
+        "description": "3D modellashtirish mavzusida uch o‘lchamli obyektlar, shakllar, modellar yaratish, obyektlarni tahrirlash va grafik muhitda ishlash asoslari o‘rganiladi.",
+    },
+    {
+        "title": "Video ma'lumotlar bilan ishlash",
+        "description": "Video ma’lumotlar bilan ishlash mavzusida video fayllar, ularni ochish, tahrirlash, kesish, montaj qilish, formatlar va saqlash usullari o‘rganiladi.",
+    },
+    {
+        "title": "Veb dizayn.CSS",
+        "description": "Veb dizayn.CSS mavzusida CSS yordamida web sahifalarni bezash, ranglar, shriftlar, margin, padding, flexbox, bloklar va responsiv dizayn asoslari o‘rganiladi.",
+    },
+    {
+        "title": "Sun’iy intellekt va zamonaviy texnologiyalar",
+        "description": "Sun’iy intellekt va zamonaviy texnologiyalar mavzusida AI tushunchasi, aqlli tizimlar, zamonaviy raqamli texnologiyalar, avtomatlashtirish va ularning hayotdagi qo‘llanilishi o‘rganiladi.",
     },
 ]
 
 
 QUIZ_BANK = {
-    "Algoritmlash asoslari": [
-        ("Algoritm nima?", "Kompyuter qurilmasi", "Muammoni yechish uchun ketma-ket amallar tartibi", "Internet manzili", "Fayl turi", "B"),
-        ("Algoritmning asosiy xossalaridan biri qaysi?", "Noaniqlik", "Cheksizlik", "Aniqlik", "Tasodifiylik", "C"),
-        ("Blok-sxemada boshlash va tugatish belgisi qanday shaklda bo‘ladi?", "To‘rtburchak", "Romb", "Oval", "Uchburchak", "C"),
-        ("Shart tekshirish blok-sxemada qaysi shakl bilan ifodalanadi?", "Romb", "Aylana", "To‘g‘ri chiziq", "Oval", "A"),
-        ("Chiziqli algoritm nima?", "Amallar ketma-ket bajariladigan algoritm", "Faqat shartli algoritm", "Faqat sikl", "Faqat grafik", "A"),
-        ("Tarmoqlanuvchi algoritmda nima ishlatiladi?", "Faqat print", "Shart", "Faqat fayl", "Faqat jadval", "B"),
-        ("Takrorlanuvchi algoritm nima?", "Amallar bir necha marta bajariladigan algoritm", "Faqat bitta amal", "Faqat matn yozish", "Faqat rasm chizish", "A"),
-        ("Algoritm ijrochisi kim yoki nima bo‘lishi mumkin?", "Faqat inson", "Faqat kompyuter", "Buyruqlarni bajara oladigan obyekt", "Faqat printer", "C"),
-        ("Psevdokod nima?", "Dasturga o‘xshash soddalashtirilgan yozuv", "Virus turi", "Operatsion tizim", "Monitor sozlamasi", "A"),
-        ("Algoritm natijaviylik xossasi nimani bildiradi?", "Algoritm oxirida natija berishi kerak", "Algoritm cheksiz davom etishi kerak", "Algoritm faqat rasm bo‘lishi kerak", "Algoritm internetga ulanishi kerak", "A"),
-    ],
-
     "Python dasturlash tili": [
-        ("Python qanday til hisoblanadi?", "Dasturlash tili", "Operatsion tizim", "Brauzer", "Antivirus", "A"),
+        ("Python qanday turdagi til hisoblanadi?", "Dasturlash tili", "Operatsion tizim", "Brauzer", "Antivirus", "A"),
         ("Python’da ekranga ma’lumot chiqarish uchun qaysi funksiya ishlatiladi?", "input()", "print()", "len()", "type()", "B"),
         ("Python’da foydalanuvchidan ma’lumot olish uchun qaysi funksiya ishlatiladi?", "print()", "input()", "range()", "str()", "B"),
-        ("Python’da butun son turi qanday nomlanadi?", "str", "float", "int", "bool", "C"),
-        ("Python’da matnli ma’lumot turi qaysi?", "str", "int", "float", "list", "A"),
+        ("Python’da butun son ma’lumot turi qaysi?", "str", "float", "int", "bool", "C"),
+        ("Python’da matnli ma’lumot turi qanday nomlanadi?", "str", "int", "float", "list", "A"),
         ("Python’da shart operatori qaysi kalit so‘z bilan boshlanadi?", "for", "while", "if", "def", "C"),
-        ("Python’da sikl yaratish uchun qaysi operatorlardan foydalaniladi?", "if va else", "for va while", "try va except", "class va object", "B"),
+        ("Python’da sikllar uchun qaysi operatorlar ishlatiladi?", "if va else", "for va while", "try va except", "class va object", "B"),
         ("Python’da funksiya yaratish uchun qaysi kalit so‘z ishlatiladi?", "func", "def", "function", "return", "B"),
-        ("Python’da ro‘yxat qanday belgilar bilan yoziladi?", "()", "{}", "[]", "<>", "C"),
-        ("Python’da kommentariya qaysi belgi bilan yoziladi?", "#", "//", "/* */", "@", "A"),
+        ("Python’da ro‘yxat qaysi belgilar bilan yoziladi?", "()", "{}", "[]", "<>", "C"),
+        ("Python’da izoh yozish uchun qaysi belgi ishlatiladi?", "#", "//", "/* */", "@", "A"),
     ],
 
     "Ma’lumotlar bazasi (SQL)": [
         ("Ma’lumotlar bazasi nima?", "Ma’lumotlarni tartibli saqlash tizimi", "Faqat rasm chizish dasturi", "Operatsion tizim", "Brauzer", "A"),
-        ("SQL nimaga xizmat qiladi?", "Ma’lumotlar bazasi bilan ishlashga", "Rasm tahrirlashga", "Kompyuterni o‘chirishga", "Video montajga", "A"),
-        ("SELECT buyrug‘i nima qiladi?", "Ma’lumot qo‘shadi", "Ma’lumotlarni tanlab ko‘rsatadi", "Jadvalni o‘chiradi", "Parol o‘zgartiradi", "B"),
+        ("SQL nima uchun ishlatiladi?", "Ma’lumotlar bazasi bilan ishlash uchun", "Video tahrirlash uchun", "Kompyuterni o‘chirish uchun", "Rasm chizish uchun", "A"),
+        ("SELECT buyrug‘i nima qiladi?", "Ma’lumot qo‘shadi", "Ma’lumotlarni tanlab ko‘rsatadi", "Jadvalni o‘chiradi", "Parolni almashtiradi", "B"),
         ("INSERT buyrug‘i nima uchun ishlatiladi?", "Ma’lumot qo‘shish uchun", "Ma’lumot o‘chirish uchun", "Jadvalni ko‘rish uchun", "Bazani yopish uchun", "A"),
         ("UPDATE buyrug‘i nima qiladi?", "Ma’lumotni yangilaydi", "Kompyuterni yangilaydi", "Internetni yoqadi", "Faylni siqadi", "A"),
         ("DELETE buyrug‘i nima qiladi?", "Ma’lumotni o‘chiradi", "Ma’lumotni chiqaradi", "Ma’lumotni nusxalaydi", "Jadval chizadi", "A"),
-        ("Jadvaldagi ustun nima deb ataladi?", "Row", "Column", "Database", "Server", "B"),
-        ("Jadvaldagi satr nima deb ataladi?", "Record", "Column", "Field", "Query", "A"),
+        ("Jadvaldagi ustun inglizcha qanday ataladi?", "Row", "Column", "Database", "Server", "B"),
+        ("Jadvaldagi satr odatda qanday ataladi?", "Record", "Column", "Field", "Query", "A"),
         ("PRIMARY KEY nimani bildiradi?", "Jadvaldagi noyob identifikator", "Oddiy matn", "Parol turi", "Brauzer nomi", "A"),
         ("WHERE sharti nima uchun ishlatiladi?", "Ma’lumotlarni shart asosida filtrlash uchun", "Jadval rangini o‘zgartirish uchun", "Baza yaratish uchun", "Kompyuter tezligini oshirish uchun", "A"),
-    ],
-
-    "Ob’ektga yo‘naltirilgan dasturlash": [
-        ("OOP nimani anglatadi?", "Ob’ektga yo‘naltirilgan dasturlash", "Operatsion tizim protokoli", "Online ochiq platforma", "Oddiy o‘yin paketi", "A"),
-        ("Class nima?", "Obyektlar yaratish uchun qolip", "Faqat son", "Fayl kengaytmasi", "Internet tarmog‘i", "A"),
-        ("Object nima?", "Class asosida yaratilgan nusxa", "Faqat jadval", "Brauzer", "Printer", "A"),
-        ("Inkapsulyatsiya nima?", "Ma’lumot va metodlarni bir obyekt ichida birlashtirish", "Internetga ulanish", "Faylni o‘chirish", "Matnni tarjima qilish", "A"),
-        ("Meros olish nima?", "Bir class boshqa class xususiyatlarini olishi", "Fayl ko‘chirish", "Xotirani tozalash", "Rasmni ochish", "A"),
-        ("Polimorfizm nima?", "Bir xil nomdagi metodlarning turlicha ishlashi", "Faqat bitta amal bajarish", "Faqat matn chiqarish", "Jadval yaratish", "A"),
-        ("Constructor odatda nima uchun kerak?", "Obyekt yaratilganda boshlang‘ich qiymat berish uchun", "Kompyuterni o‘chirish uchun", "Bazani tozalash uchun", "Internetni ulash uchun", "A"),
-        ("Python’da class yaratish uchun qaysi kalit so‘z ishlatiladi?", "def", "class", "object", "new", "B"),
-        ("Metod nima?", "Class ichidagi funksiya", "Faqat o‘zgaruvchi", "Fayl turi", "Server nomi", "A"),
-        ("self kalit so‘zi nimani bildiradi?", "Joriy obyektga murojaatni", "Kompyuter xotirasini", "Internet manzilini", "Operatsion tizimni", "A"),
     ],
 
     "Kompyuter tarmoqlari": [
@@ -119,36 +95,10 @@ QUIZ_BANK = {
         ("IP manzil nima?", "Tarmoqdagi qurilma manzili", "Fayl nomi", "Rasm formati", "Parol turi", "A"),
         ("DNS nima vazifa bajaradi?", "Domen nomini IP manzilga aylantiradi", "Kompyuterni sovitadi", "Rasm yaratadi", "Fayl siqadi", "A"),
         ("HTTP nima?", "Veb ma’lumot almashish protokoli", "Grafik dastur", "Xotira turi", "Operatsion tizim", "A"),
-        ("HTTPS nimasi bilan xavfsizroq?", "Ma’lumotlarni shifrlab uzatadi", "Faqat tezroq ishlaydi", "Faqat rasm ko‘rsatadi", "Faqat offline ishlaydi", "A"),
+        ("HTTPS nima sababdan xavfsizroq?", "Ma’lumotlarni shifrlab uzatadi", "Faqat tezroq ishlaydi", "Faqat rasm ko‘rsatadi", "Faqat offline ishlaydi", "A"),
         ("Router nima qiladi?", "Tarmoq trafikini yo‘naltiradi", "Matn yozadi", "Faylni o‘chiradi", "Monitorni yoqadi", "A"),
         ("Server nima?", "Mijozlarga xizmat ko‘rsatuvchi kompyuter yoki dastur", "Faqat klaviatura", "Rasm turi", "O‘yin turi", "A"),
         ("Client nima?", "Server xizmatidan foydalanuvchi qurilma yoki dastur", "Faqat printer", "Antivirus", "BIOS turi", "A"),
-    ],
-
-    "Sun’iy intellekt va mashinaviy o‘rganish": [
-        ("Sun’iy intellekt nima?", "Kompyuterning aqlli vazifalarni bajarish texnologiyasi", "Faqat printer sozlamasi", "Fayl kengaytmasi", "Monitor turi", "A"),
-        ("Mashinaviy o‘rganish nima?", "Ma’lumotlar asosida o‘rganadigan algoritmlar yo‘nalishi", "Faqat qo‘lda yozish", "Internetni o‘chirish", "Kompyuter yig‘ish", "A"),
-        ("Dataset nima?", "Model o‘qitish uchun ma’lumotlar to‘plami", "Faylni o‘chirish dasturi", "Monitor sozlamasi", "Router turi", "A"),
-        ("Model nima?", "Ma’lumotlardan o‘rgangan matematik tuzilma", "Faqat rasm", "Fayl nomi", "Parol", "A"),
-        ("Training nima?", "Modelni ma’lumotlar asosida o‘qitish", "Kompyuterni formatlash", "Faylni siqish", "Brauzerni yopish", "A"),
-        ("Prediction nima?", "Model tomonidan bashorat qilish", "Matnni o‘chirish", "Tarmoq uzilishi", "Printer sozlamasi", "A"),
-        ("Classification vazifasi nima?", "Ma’lumotni sinflarga ajratish", "Faylni nusxalash", "Monitorni sozlash", "Bazani yopish", "A"),
-        ("Regression vazifasi nima?", "Sonli qiymatni bashorat qilish", "Faqat rasm chizish", "Parol almashtirish", "Tizimni o‘chirish", "A"),
-        ("Overfitting nima?", "Model o‘quv ma’lumotiga haddan tashqari moslashib qolishi", "Internet tezlashishi", "Fayl ochilmasligi", "Monitor o‘chishi", "A"),
-        ("AI tavsiya tizimi nimaga xizmat qiladi?", "Foydalanuvchiga mos tavsiyalar berishga", "Kompyuterni tozalashga", "Faqat musiqa eshitishga", "Kabel ulashga", "A"),
-    ],
-
-    "Web-dasturlash (Frontend)": [
-        ("Frontend nima?", "Foydalanuvchi ko‘radigan web qism", "Serverdagi baza", "Operatsion tizim", "Router", "A"),
-        ("HTML nima uchun ishlatiladi?", "Veb sahifa tuzilmasini yaratish uchun", "Dizayn rangini avtomatik tanlash uchun", "Ma’lumotlar bazasi uchun", "Serverni boshqarish uchun", "A"),
-        ("CSS nima uchun kerak?", "Veb sahifani bezash uchun", "Baza yaratish uchun", "Kompyuterni formatlash uchun", "Faylni shifrlash uchun", "A"),
-        ("JavaScript nima qiladi?", "Veb sahifaga interaktivlik qo‘shadi", "Faqat rasm saqlaydi", "Internet kabelini ulaydi", "BIOS sozlaydi", "A"),
-        ("Responsiv dizayn nima?", "Sahifaning turli ekranlarga moslashishi", "Faqat katta ekranda ishlashi", "Faqat qora rang", "Faylni o‘chirish", "A"),
-        ("HTML’da havola yaratish uchun qaysi teg ishlatiladi?", "<a>", "<p>", "<div>", "<img>", "A"),
-        ("HTML’da rasm chiqarish uchun qaysi teg ishlatiladi?", "<img>", "<link>", "<table>", "<script>", "A"),
-        ("CSS’da rang berish uchun qaysi xossa ishlatiladi?", "color", "size", "print", "select", "A"),
-        ("React nima?", "Frontend kutubxonasi", "Ma’lumotlar bazasi", "Operatsion tizim", "Router protokoli", "A"),
-        ("API frontend uchun nima beradi?", "Backend bilan ma’lumot almashish imkonini", "Monitorni tozalashni", "Faylni siqishni", "Kompyuterni o‘chirishni", "A"),
     ],
 
     "Axborot xavfsizligi": [
@@ -162,19 +112,6 @@ QUIZ_BANK = {
         ("Firewall nima qiladi?", "Tarmoq trafikini nazorat qiladi", "Matn yozadi", "Video ko‘rsatadi", "Rasm chizadi", "A"),
         ("Backup nima?", "Ma’lumotlarning zaxira nusxasi", "Virus turi", "Monitor sozlamasi", "Fayl kengaytmasi", "A"),
         ("Maxfiy ma’lumotlarni himoya qilishda eng muhim narsa nima?", "Parol va kirish huquqlarini ehtiyot qilish", "Hamma bilan ulashish", "Parolni oddiy qilish", "Public joyga yozib qo‘yish", "A"),
-    ],
-
-    "Kompyuter grafikasi": [
-        ("Kompyuter grafikasi nima?", "Tasvirlarni kompyuterda yaratish va qayta ishlash sohasi", "Faqat matn yozish", "Tarmoq sozlash", "Baza yaratish", "A"),
-        ("Rastr grafika nimadan tashkil topadi?", "Piksellardan", "Faqat chiziqlardan", "Faqat matndan", "Faqat jadvaldan", "A"),
-        ("Vektor grafika nimaga asoslanadi?", "Matematik chiziq va shakllarga", "Piksellar sonigagina", "Faqat matnga", "Faqat ovozga", "A"),
-        ("Piksel nima?", "Raqamli tasvirning eng kichik nuqtasi", "Printer turi", "Fayl papkasi", "Tarmoq protokoli", "A"),
-        ("RGB rang modeli qaysi ranglardan iborat?", "Qizil, yashil, ko‘k", "Oq, qora, sariq", "Ko‘k, qora, oq", "Sariq, yashil, oq", "A"),
-        ("2D grafika nima?", "Ikki o‘lchamli tasvirlar", "Uch o‘lchamli obyekt", "Faqat ovoz", "Faqat matn", "A"),
-        ("3D grafika nima?", "Uch o‘lchamli obyektlar bilan ishlash", "Faqat jadval", "Faqat matn", "Faqat parol", "A"),
-        ("Grafik fayl formatiga qaysi biri misol bo‘ladi?", "PNG", "DOCX", "SQL", "PY", "A"),
-        ("Resolution nimani bildiradi?", "Tasvir aniqligi yoki o‘lcham darajasi", "Internet tezligi", "Parol uzunligi", "Fayl egasi", "A"),
-        ("Adobe Photoshop asosan nima uchun ishlatiladi?", "Rastr tasvirlarni tahrirlash uchun", "Server yaratish uchun", "Python kod yozish uchun", "SQL baza boshqarish uchun", "A"),
     ],
 
     "Operatsion tizimlar": [
@@ -202,6 +139,71 @@ QUIZ_BANK = {
         ("Domen nomi nima?", "Saytning internetdagi nomi", "Kompyuter xotirasi", "Klaviatura tugmasi", "Printer qog‘ozi", "A"),
         ("Dasturdagi xatolik nima deb ataladi?", "Bug", "Tag", "Host", "Link", "A"),
     ],
+
+    "Elektron jadvallar": [
+        ("Elektron jadval nima?", "Ma’lumotlarni jadval ko‘rinishida saqlash va hisoblash dasturi", "Faqat rasm chizish dasturi", "Video ko‘rish dasturi", "Operatsion tizim", "A"),
+        ("Microsoft Excel qanday dastur?", "Elektron jadval dasturi", "Brauzer", "Antivirus", "Video montaj dasturi", "A"),
+        ("Elektron jadvaldagi kichik bo‘lim nima deb ataladi?", "Katak", "Papka", "Disk", "Oyna", "A"),
+        ("Excel’da formula odatda qaysi belgi bilan boshlanadi?", "=", "#", "@", "$", "A"),
+        ("SUM funksiyasi nima qiladi?", "Sonlarni yig‘adi", "Matnni o‘chiradi", "Rasm chizadi", "Faylni yopadi", "A"),
+        ("A1 nimani bildiradi?", "A ustun va 1-satr kesishmasidagi katakni", "Fayl nomini", "Diagramma turini", "Dastur versiyasini", "A"),
+        ("Diagramma nima uchun ishlatiladi?", "Ma’lumotlarni grafik ko‘rinishda tasvirlash uchun", "Parol yaratish uchun", "Fayl o‘chirish uchun", "Internetga ulanish uchun", "A"),
+        ("Elektron jadvalda ustunlar odatda qanday belgilanadi?", "Harflar bilan", "Faqat raqamlar bilan", "Faqat ranglar bilan", "Faqat belgilar bilan", "A"),
+        ("Elektron jadvalda satrlar odatda qanday belgilanadi?", "Raqamlar bilan", "Harflar bilan", "Ranglar bilan", "Fayl nomlari bilan", "A"),
+        ("AVERAGE funksiyasi nima qiladi?", "O‘rtacha qiymatni hisoblaydi", "Eng katta sonni o‘chiradi", "Matnni tarjima qiladi", "Jadvalni yopadi", "A"),
+    ],
+
+    "3D modellashtirish": [
+        ("3D modellashtirish nima?", "Uch o‘lchamli obyektlarni yaratish jarayoni", "Faqat matn yozish", "Faqat jadval tuzish", "Internet tezligini o‘lchash", "A"),
+        ("3D obyekt nechta asosiy o‘lchamga ega?", "3 ta", "1 ta", "2 ta", "5 ta", "A"),
+        ("3D modellashtirishda kenglik, balandlik va yana nima ishlatiladi?", "Chuqurlik", "Parol", "Ustun", "Brauzer", "A"),
+        ("Blender qanday dastur hisoblanadi?", "3D modellashtirish dasturi", "Matn muharriri", "Antivirus", "Brauzer", "A"),
+        ("3D model nima?", "Uch o‘lchamli obyektning raqamli ko‘rinishi", "Faqat rasm nomi", "Parol turi", "SQL so‘rovi", "A"),
+        ("Rendering nima?", "3D sahnani yakuniy tasvirga aylantirish", "Faylni o‘chirish", "Matnni nusxalash", "Tarmoqni uzish", "A"),
+        ("3D modellashtirish qayerlarda ishlatiladi?", "O‘yin, arxitektura, animatsiya va dizaynda", "Faqat kalkulyatorda", "Faqat parol yaratishda", "Faqat xat yozishda", "A"),
+        ("3D obyektni aylantirish amali qanday maqsadda ishlatiladi?", "Obyekt ko‘rinishini o‘zgartirish uchun", "Faylni yopish uchun", "Internetni sozlash uchun", "Matnni tarjima qilish uchun", "A"),
+        ("Material nima?", "3D obyekt yuzasining rangi va ko‘rinishi", "Faqat fayl hajmi", "Klaviatura turi", "Tarmoq nomi", "A"),
+        ("3D sahnada yorug‘lik nima uchun kerak?", "Obyektlarni ko‘rinadigan va realroq qilish uchun", "Kod yozish uchun", "Bazani o‘chirish uchun", "Parol almashtirish uchun", "A"),
+    ],
+
+    "Video ma'lumotlar bilan ishlash": [
+        ("Video ma’lumot nima?", "Harakatlanuvchi tasvir va ovozdan iborat raqamli ma’lumot", "Faqat matnli fayl", "Faqat jadval", "Faqat parol", "A"),
+        ("Video montaj nima?", "Videoni kesish, birlashtirish va tahrirlash jarayoni", "Faylni shifrlash", "Kompyuterni o‘chirish", "Internet tezligini oshirish", "A"),
+        ("MP4 qanday format?", "Video fayl formati", "Matn formati", "Jadval formati", "Dasturlash tili", "A"),
+        ("Video fayl hajmiga nimalar ta’sir qiladi?", "Sifat, davomiylik va format", "Faqat klaviatura", "Faqat parol", "Faqat sichqoncha", "A"),
+        ("Videoni kesish nima uchun kerak?", "Keraksiz qismlarni olib tashlash uchun", "Parolni tiklash uchun", "Jadval yaratish uchun", "Tarmoqni uzish uchun", "A"),
+        ("Frame nima?", "Videodagi bitta kadr", "Fayl papkasi", "SQL jadval", "Router turi", "A"),
+        ("FPS nimani bildiradi?", "Bir soniyada ko‘rsatiladigan kadrlar sonini", "Fayl parolini", "Internet nomini", "Monitor rangini", "A"),
+        ("Video tahrirlash dasturiga qaysi biri misol bo‘ladi?", "Adobe Premiere Pro", "Microsoft Excel", "Notepad", "Calculator", "A"),
+        ("Videoga matn qo‘shish nima uchun ishlatiladi?", "Izoh, sarlavha yoki subtitr berish uchun", "Kompyuterni formatlash uchun", "Faylni yashirish uchun", "Parol yaratish uchun", "A"),
+        ("Videoni eksport qilish nimani bildiradi?", "Tayyor videoni kerakli formatda saqlash", "Videoni o‘chirib tashlash", "Kompyuterni qayta yoqish", "Brauzerni yopish", "A"),
+    ],
+
+    "Veb dizayn.CSS": [
+        ("CSS nima?", "Web sahifaga dizayn beruvchi uslublar tili", "Ma’lumotlar bazasi", "Operatsion tizim", "Antivirus", "A"),
+        ("CSS’da rang berish uchun qaysi xossa ishlatiladi?", "color", "print", "select", "query", "A"),
+        ("background-color nima qiladi?", "Element orqa fon rangini belgilaydi", "Matnni o‘chiradi", "Fayl yaratadi", "Serverni ishga tushiradi", "A"),
+        ("font-size nima uchun ishlatiladi?", "Matn o‘lchamini belgilash uchun", "Internetni ulash uchun", "Jadvalni o‘chirish uchun", "Parol yaratish uchun", "A"),
+        ("margin nima?", "Element tashqi bo‘shlig‘i", "Element ichki matni", "Rasm formati", "Tarmoq protokoli", "A"),
+        ("padding nima?", "Element ichki bo‘shlig‘i", "Brauzer nomi", "Dastur xatosi", "Fayl turi", "A"),
+        ("border nima uchun ishlatiladi?", "Elementga chegara berish uchun", "Ma’lumot o‘chirish uchun", "Server ochish uchun", "Parolni almashtirish uchun", "A"),
+        ("CSS’da class selector qanday yoziladi?", ".class_nomi", "#class_nomi", "@class_nomi", "$class_nomi", "A"),
+        ("CSS’da id selector qanday yoziladi?", "#id_nomi", ".id_nomi", "@id_nomi", "$id_nomi", "A"),
+        ("Responsiv dizayn nima?", "Sahifaning turli ekran o‘lchamlariga moslashishi", "Faqat bitta ekranda ishlashi", "Faqat qora rangda bo‘lishi", "Faylni o‘chirish usuli", "A"),
+    ],
+
+    "Sun’iy intellekt va zamonaviy texnologiyalar": [
+        ("Sun’iy intellekt nima?", "Kompyuterning aqlli vazifalarni bajarish texnologiyasi", "Faqat printer sozlamasi", "Fayl kengaytmasi", "Monitor turi", "A"),
+        ("AI qisqartmasi nimani anglatadi?", "Artificial Intelligence", "Automatic Internet", "Advanced Image", "Application Input", "A"),
+        ("Chatbot nima?", "Foydalanuvchi bilan suhbatlasha oladigan dastur", "Faqat rasm chizuvchi qurilma", "Internet kabeli", "Operatsion tizim", "A"),
+        ("Zamonaviy texnologiyalarga qaysi biri misol bo‘ladi?", "Sun’iy intellekt, robototexnika va bulutli xizmatlar", "Faqat daftar va ruchka", "Faqat doska", "Faqat oddiy kalkulyator", "A"),
+        ("Mashinaviy o‘rganish nima?", "Ma’lumotlar asosida o‘rganadigan algoritmlar yo‘nalishi", "Faqat qo‘lda yozish", "Internetni o‘chirish", "Kompyuter yig‘ish", "A"),
+        ("AI qayerlarda qo‘llaniladi?", "Tibbiyot, ta’lim, transport, biznes va dasturlarda", "Faqat chiroq yoqishda", "Faqat qog‘oz kesishda", "Faqat stol tuzatishda", "A"),
+        ("Raqamli texnologiya nima?", "Ma’lumotlarni raqamli shaklda qayta ishlovchi texnologiya", "Faqat qog‘oz hujjat", "Faqat mexanik uskuna", "Faqat oddiy daftar", "A"),
+        ("Bulutli texnologiya nima?", "Ma’lumot va xizmatlarni internet orqali ishlatish imkoniyati", "Faqat kompyuter ichidagi chang", "Faqat monitor nuri", "Faqat printer siyohi", "A"),
+        ("Avtomatlashtirish nima?", "Jarayonlarni inson aralashuvisiz yoki kam aralashuv bilan bajarish", "Faqat qo‘lda yozish", "Faylni butunlay yo‘qotish", "Internetni uzish", "A"),
+        ("Sun’iy intellektdan foydalanishda nima muhim?", "Xavfsizlik, ishonchlilik va to‘g‘ri ma’lumotdan foydalanish", "Har qanday javobga ko‘r-ko‘rona ishonish", "Parolni AIga berish", "Manbani tekshirmaslik", "A"),
+    ],
 }
 
 
@@ -210,6 +212,7 @@ def run():
     total_topics = 0
     total_quizzes = 0
     total_questions = 0
+    deleted_quizzes = 0
 
     for topic_data in TOPICS:
         topic, topic_created = Topic.objects.get_or_create(
@@ -219,33 +222,29 @@ def run():
             }
         )
 
-        # Agar mavzu oldin bor bo'lsa, description bo'sh bo'lsa to'ldirib qo'yamiz
-        if not topic.description:
-            topic.description = topic_data["description"]
-            topic.save(update_fields=["description"])
-
-        total_topics += 1
+        if not topic_created:
+            if topic.description != topic_data["description"]:
+                topic.description = topic_data["description"]
+                topic.save(update_fields=["description"])
 
         questions = QUIZ_BANK.get(topic.title, [])
 
-        quiz_title = f"{topic.title} bo'yicha 10 ta test"
-        quiz_description = f"Ushbu test {topic.title} mavzusi bo‘yicha bilimlarni tekshirish uchun tuzilgan."
+        if len(questions) != 10:
+            raise ValueError(f"{topic.title} mavzusi uchun savollar soni 10 ta emas: {len(questions)} ta")
 
-        quiz, quiz_created = Quiz.objects.get_or_create(
+        if DELETE_OLD_QUIZZES_FOR_THESE_TOPICS:
+            old_count = Quiz.objects.filter(topic=topic).count()
+
+            if old_count > 0:
+                Quiz.objects.filter(topic=topic).delete()
+                deleted_quizzes += old_count
+                print(f"Eski quizlar o‘chirildi: {topic.title} | {old_count} ta")
+
+        quiz = Quiz.objects.create(
             topic=topic,
-            title=quiz_title,
-            defaults={
-                "description": quiz_description
-            }
+            title=f"{topic.title} bo‘yicha 10 ta test",
+            description=f"Ushbu test {topic.title} mavzusi bo‘yicha bilimlarni tekshirish uchun tuzilgan."
         )
-
-        # Agar quiz oldin bor bo'lsa, description yangilab qo'yamiz
-        if quiz.description != quiz_description:
-            quiz.description = quiz_description
-            quiz.save(update_fields=["description"])
-
-        # Shu quizdagi eski savollarni tozalaymiz
-        quiz.questions.all().delete()
 
         question_objects = []
 
@@ -264,17 +263,20 @@ def run():
 
         Question.objects.bulk_create(question_objects)
 
+        total_topics += 1
         total_quizzes += 1
         total_questions += len(question_objects)
 
-        status = "Yangi yaratildi" if quiz_created else "Oldin bor edi, savollari yangilandi"
-        print(f"✅ {status}: {quiz.title} | Savollar: {len(question_objects)}")
+        print(f"Quiz qo‘shildi: {quiz.title} | Savollar: {len(question_objects)} ta")
 
     print("\n==============================")
-    print("✅ Barcha testlar qo'shildi!")
-    print(f"📚 Mavzular soni: {total_topics}")
-    print(f"📝 Quizlar soni: {total_quizzes}")
-    print(f"❓ Savollar soni: {total_questions}")
+    print("Barcha quizlar bazaga qo‘shildi!")
+    print(f"Mavzular soni: {total_topics}")
+    print(f"Yangi quizlar soni: {total_quizzes}")
+    print(f"Yangi savollar soni: {total_questions}")
+    print(f"O‘chirilgan eski quizlar soni: {deleted_quizzes}")
+    print(f"Bazada jami quizlar soni: {Quiz.objects.count()}")
+    print(f"Bazada jami savollar soni: {Question.objects.count()}")
     print("==============================")
 
 
